@@ -1,0 +1,149 @@
+@font-face {
+  font-family: "RedHat";
+  font-style: normal;
+  src: url("fonts/RedHatDisplay-VariableFont_wght.ttf");
+}
+* {
+  font-family: "RedHat", sans-serif !important;
+}
+body {
+  max-width: 1024px;
+  margin: 0 auto;
+  color: rgb(103, 97, 98);
+}
+header {
+  text-align: center;
+  background-color: #f5f5f5;
+}
+header > .logo {
+  display: flex;
+}
+header > .title {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #053672;
+  max-width: 90%;
+  margin: 40px auto 0px auto;
+}
+header > .separator {
+  width: 210px;
+  border: solid 2px rgb(255, 204, 0);
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+header .description {
+  max-width: 90%;
+  margin: 15px auto;
+  padding-bottom: 15px;
+  display: flex;
+}
+header .description:last-of-type {
+  padding-bottom: 30px;
+}
+header .description > span {
+  text-align: justify;
+}
+header .description > img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+.select.is-fullwidth select {
+  height: 45px;
+}
+#form {
+}
+.help {
+  display: none;
+}
+
+footer {
+  /*background-color: #F5F5F5;*/
+}
+footer button#submit-btn {
+  background-color: #053672;
+  width: auto;
+  margin: 20px 0px;
+  padding: 20px 40px;
+  border-radius: 0px;
+}
+footer .footer-text {
+  color: #053672;
+  font-size: 0.92em;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px 0px 15px 0px;
+}
+.field-container {
+  margin: 15px;
+}
+.field {
+  flex: 1;
+  min-width: 0;
+}
+.field-checkbox {
+  max-width: 90%;
+  margin: 30px auto;
+  text-align: justify;
+}
+.m-auto {
+  margin: 0 auto;
+}
+
+.label {
+  color: rgb(103, 97, 98);
+  font-weight: normal;
+}
+label[for="confirmation"] {
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 768px) {
+  header > .title {
+    max-width: 480px;
+  }
+  header .description {
+    max-width: 680px;
+  }
+  .field-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .field-checkbox {
+    max-width: 680px;
+  }
+  footer .footer-text {
+    font-size: 1.1em;
+  }
+}
+
+ol {
+  list-style-type: decimal;
+  margin: 0;
+  padding: 0;
+  margin-left: 40px;
+}
+ol > li {
+  margin: 0 0 15px 0;
+  padding: 0;
+  position: relative;
+}
+ol ul {
+  list-style-type: disc;
+  margin: 0;
+  padding: 0 0 0 20px;
+}
+ol ul > li {
+  margin: 0;
+  padding: 0;
+}
+ol ul ul {
+  list-style-type: circle;
+  padding-left: 20px;
+}
+ol ul ul > li {
+  margin: 0 0 5px 0;
+}

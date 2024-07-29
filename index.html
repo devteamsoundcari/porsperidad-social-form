@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Prosperidad Social - Videollamada</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.png" />
+    <link rel="stylesheet" href="lib/bulma.min.css" />
+    <link rel="stylesheet" href="lib/MultiSelect.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      type="text/javascript"
+      src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=H2k1MYDniPiBKe2aNDbvbsoxhKLJ3zFUvTVmtFusvS9NjZOsSImMufGHxfnMqYe8FMDFlL858Qjb3eQtJb0Fga5uRDmck2dmLdqrbLxDHNA"
+      charset="UTF-8"
+    ></script>
+    <link
+      rel="stylesheet"
+      crossorigin="anonymous"
+      href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9hdzAxLnVzLWVhc3QtMS4wMjAuaXZycG93ZXJzLm5ldC9mb3Jtcy9tYXMtZ29iY29sLw"
+    />
+    <script src="lib/MultiSelect.js"></script>
+    <script src="divipola.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <img class="logo" src="images/logo.png" />
+      <h1 class="title">Bienvenido al Servicio de Videollamada</h1>
+      <span class="separator"></span>
+    </header>
+    <form id="form" action="#">
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Nombre y Apellidos: *</label>
+          <div class="control">
+            <input name="nombre" class="input" type="text" />
+          </div>
+          <p id="error-nombre" class="help is-danger">
+            Indique su nombre y apellidos. Solo se permiten caracteres
+            alfabéticos.
+          </p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Tipo de documento: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select name="tipo-documento">
+                <option selected value="">- Seleccione -</option>
+                <option value="Cédula de ciudadanía">
+                  Cédula de ciudadanía
+                </option>
+                <option value="Cédula de Extranjería">
+                  Cédula de Extranjería
+                </option>
+                <option value="Pasaporte">Pasaporte</option>
+                <option value="Permiso Protección Temporal PPT">
+                  Permiso Protección Temporal PPT
+                </option>
+                <!--<option value="Número único de identificación personal">Número único de identificación personal</option>-->
+                <option value="Tarjeta de identidad">
+                  Tarjeta de identidad
+                </option>
+                <option value="Registro civil">Registro civil</option>
+                <option value="Permiso especial de Permanencia PEP">
+                  Permiso especial de Permanencia PEP
+                </option>
+              </select>
+            </div>
+          </div>
+          <p id="error-tipo-documento" class="help is-danger">
+            Seleccione un tipo de documento
+          </p>
+        </div>
+        <div class="field">
+          <label class="label">Número de identificación: *</label>
+          <div class="control">
+            <input name="identificacion" class="input" type="number" />
+          </div>
+          <p id="error-identificacion" class="help is-danger">
+            Número de identificación inválido
+          </p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Número de celular: *</label>
+          <div class="control">
+            <input name="celular" class="input" type="number" />
+          </div>
+          <p id="error-celular" class="help is-danger">
+            Número de celular inválido
+          </p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Departamento de Residencia: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select name="departamento" id="departamento">
+                <option selected value="">- Seleccione -</option>
+              </select>
+            </div>
+          </div>
+          <p id="error-departamento" class="help is-danger">
+            Seleccione un Departamento
+          </p>
+        </div>
+        <div class="field">
+          <label class="label">Ciudad de Residencia: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select name="ciudad" id="ciudad" disabled></select>
+            </div>
+          </div>
+          <p id="error-ciudad" class="help is-danger">Seleccione una Ciudad</p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Iniciar Sesión: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select name="sesion">
+                <option selected value="">- Seleccione -</option>
+                <option value="Videollamada">Videollamada</option>
+                <option value="Lengua de Señas">Lengua de Señas</option>
+              </select>
+            </div>
+          </div>
+          <p id="error-sesion" class="help is-danger">
+            Seleccione un motivo de inicio de sesión
+          </p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Información Poblacional: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select
+                name="informacion-poblacional"
+                id="multiple-informacion-poblacional"
+                data-placeholder="- Seleccione -"
+                multiple
+                data-multi-select
+              >
+                <option value="Gitano (población Room)">
+                  Gitano (población Room)
+                </option>
+                <option value="Indígena">Indígena</option>
+                <option value="Mestizo">Mestizo</option>
+                <option value="Afrocolombiano">Afrocolombiano</option>
+                <option value="Raizal">Raizal</option>
+                <option value="Palenquero">Palenquero</option>
+                <option value="Comunidades Negras">Comunidades Negras</option>
+                <option value="LGTBI">LGTBI</option>
+                <option value="Otro grupo">Otro grupo</option>
+                <option value="No aporta">No aporta</option>
+                <option value="Ninguna de las anteriores">
+                  Ninguna de las anteriores
+                </option>
+              </select>
+            </div>
+          </div>
+          <p id="error-informacion-poblacional" class="help is-danger">
+            Seleccione una opción de información poblacional
+          </p>
+        </div>
+        <div class="field">
+          <label class="label">Atención Preferencial: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select
+                name="atencion-preferencial"
+                id="multiple-atencion-preferencial"
+                data-placeholder="- Seleccione -"
+                multiple
+                data-multi-select
+              >
+                <option value="Niñas/Niños/Adolescentes">
+                  Niñas/Niños/Adolescentes
+                </option>
+                <option value="Adulto Mayor">Adulto Mayor</option>
+                <option value="Población Desplazada">
+                  Población Desplazada
+                </option>
+                <option value="Mujer Gestante">Mujer Gestante</option>
+                <option value="Persona con Discapacidad">
+                  Persona con Discapacidad
+                </option>
+                <option value="Víctima del conflicto armado">
+                  Víctima del conflicto armado
+                </option>
+                <option value="Periodista">Periodista</option>
+                <option value="Campesinos y Campesinas">
+                  Campesinos y Campesinas
+                </option>
+                <option value="Ninguna de las anteriores">
+                  Ninguna de las anteriores
+                </option>
+                <option value="No aporta">No aporta</option>
+              </select>
+            </div>
+          </div>
+          <p id="error-atencion-preferencial" class="help is-danger">
+            Seleccione una opción de atención preferencial
+          </p>
+        </div>
+      </div>
+
+      <div class="field-container">
+        <div class="field">
+          <label class="label">Género: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select name="genero">
+                <option selected value="">- Seleccione -</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Otros">Otros</option>
+                <option value="No aporta">No aporta</option>
+              </select>
+            </div>
+          </div>
+          <p id="error-genero" class="help is-danger">
+            Seleccione una opción de género
+          </p>
+        </div>
+        <div class="field">
+          <label class="label">Nivel de escolaridad: *</label>
+          <div class="control is-expandend">
+            <div class="select is-fullwidth">
+              <select
+                name="nivel-escolaridad"
+                id="nivel-escolaridad"
+                data-placeholder="- Seleccione -"
+                multiple
+                data-multi-select
+              >
+                <option value="Pre-escolar">Pre-escolar</option>
+                <option value="Primaria">Primaria</option>
+                <option value="Secundaria">Secundaria</option>
+                <option value="Técnico">Técnico</option>
+                <option value="Tecnólogo">Tecnólogo</option>
+                <option value="Pregrado">Pregrado</option>
+                <option value="Postgrado">Postgrado</option>
+                <option value="No aporta">No aporta</option>
+                <option value="Ninguna de las anteriores">
+                  Ninguna de las anteriores
+                </option>
+              </select>
+            </div>
+          </div>
+          <p id="error-nivel-escolaridad" class="help is-danger">
+            Seleccione una opción de nivel de escolaridad
+          </p>
+        </div>
+      </div>
+
+      <div class="field-checkbox">
+        <input type="checkbox" id="confirmation" name="confirmation" />
+        <label for="confirmation"
+          >¿Aceptas que tus datos personales sean utilizados para la gestión de
+          tu trámite?<br /><a
+            target="_blank"
+            href="https://prosperidadsocial.gov.co/politica-de-proteccion-de-datos-personales"
+            >Más información Política de Tratamiento de Datos</a
+          >
+          | <a target="_blank" href="recomendaciones.php">Recomendaciones</a>
+        </label>
+        <p id="error-confirmation" class="help is-danger">
+          Para continuar, debe aceptar las condiciones.
+        </p>
+      </div>
+    </form>
+    <footer>
+      <div class="field is-grouped">
+        <div class="control m-auto">
+          <p id="buttonMessage" class="help is-danger">
+            Es necesario que llenes todos los campos del formulario.
+          </p>
+          <button id="submit-btn" class="button is-link">Continuar</button>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
