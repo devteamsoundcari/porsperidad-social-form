@@ -20,9 +20,9 @@
       crossorigin="anonymous"
       href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9hdzAxLnVzLWVhc3QtMS4wMjAuaXZycG93ZXJzLm5ldC9mb3Jtcy9tYXMtZ29iY29sLw"
     />
-    <script src="lib/MultiSelect.js"></script>
-    <script src="divipola.js"></script>
-    <script src="app.js"></script>
+    <script defer type="module" src="lib/MultiSelect.js"></script>
+    <!-- <script defer type="module" src="divipola.js"></script> -->
+    <script defer type="module" src="main.js"></script>
   </head>
 
   <body>
@@ -36,7 +36,7 @@
         <div class="field">
           <label class="label">Nombre y Apellidos: *</label>
           <div class="control">
-            <input name="nombre" class="input" type="text" />
+            <input name="nombre" class="input" id="nombre" type="text" />
           </div>
           <p id="error-nombre" class="help is-danger">
             Indique su nombre y apellidos. Solo se permiten caracteres
@@ -106,7 +106,7 @@
           <div class="control is-expandend">
             <div class="select is-fullwidth">
               <select name="departamento" id="departamento">
-                <option selected value="">- Seleccione -</option>
+                <!-- <option selected value="">- Seleccione -</option> -->
               </select>
             </div>
           </div>
