@@ -93,225 +93,51 @@ const loadMultiSelects = () => {
   );
 };
 
-//variables to handle the call
-let nameValidated,
-  docType,
-  docNumber,
-  cellphone,
-  residenceDep,
-  residenceCity,
-  sesionValidated,
-  pobInformation,
-  preferencialAtention,
-  genderValidated,
-  scholarship,
-  confirmValidated;
-
-const nameValidator = (name) => {
-  if (!name || !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name)) {
-    document.getElementById("error-nombre").style.display = "block";
-    nameValidated = false;
-  } else {
-    document.getElementById("error-nombre").style.display = "none";
-    nameValidated = true;
-  }
-};
-
-const docTypeValidator = (docTypeV) => {
-  if (!docTypeV) {
-    document.getElementById("error-tipo-documento").style.display = "block";
-    docType = false;
-  } else {
-    document.getElementById("error-tipo-documento").style.display = "none";
-    docType = true;
-  }
-};
-
-const docNumberValidator = (docNumberV) => {
-  if (!docNumberV || !/^\d{4,15}$/.test(docNumberV)) {
-    document.getElementById("error-identificacion").style.display = "block";
-    docNumber = false;
-  } else {
-    document.getElementById("error-identificacion").style.display = "none";
-    docNumber = true;
-  }
-};
-
-const cellphoneValidator = (cellphoneV) => {
-  if (
-    !cellphoneV ||
-    !/^\d{1,10}$/.test(cellphoneV) ||
-    cellphoneV.length < 10 ||
-    cellphoneV.length > 10
-  ) {
-    document.getElementById("error-celular").style.display = "block";
-    cellphone = false;
-  } else {
-    document.getElementById("error-celular").style.display = "none";
-    cellphone = true;
-  }
-};
-
-const departmentValidator = (department) => {
-  if (!department || department === undefined) {
-    document.getElementById("error-departamento").style.display = "block";
-    residenceDep = false;
-  } else {
-    document.getElementById("error-departamento").style.display = "none";
-    residenceDep = true;
-  }
-};
-
-const cityValidator = (city) => {
-  if (!city) {
-    document.getElementById("error-ciudad").style.display = "block";
-    residenceCity = false;
-  } else {
-    document.getElementById("error-ciudad").style.display = "none";
-    residenceCity = true;
-  }
-};
-
-const sesionValidator = (sesionValue) => {
-  if (!sesionValue) {
-    document.getElementById("error-sesion").style.display = "block";
-    sesionValidated = false;
-  } else {
-    document.getElementById("error-sesion").style.display = "none";
-    sesionValidated = true;
-  }
-};
-
-const poblationValidator = (poblationValue) => {
-  if (!poblationValue) {
-    document.getElementById("error-informacion-poblacional").style.display =
-      "block";
-    pobInformation = false;
-  } else {
-    document.getElementById("error-informacion-poblacional").style.display =
-      "none";
-    pobInformation = true;
-  }
-};
-
-const preferentialAtentionValidator = (preferentialAtentionValue) => {
-  if (!preferentialAtentionValue) {
-    document.getElementById("error-atencion-preferencial").style.display =
-      "block";
-    preferencialAtention = false;
-  } else {
-    document.getElementById("error-atencion-preferencial").style.display =
-      "none";
-    preferencialAtention = true;
-  }
-};
-
-const genderValidator = (genderValue) => {
-  if (!genderValue) {
-    document.getElementById("error-genero").style.display = "block";
-    genderValidated = false;
-  } else {
-    document.getElementById("error-genero").style.display = "none";
-    genderValidated = true;
-  }
-};
-
-const scholarshipValidator = (scholarshipValue) => {
-  if (!scholarshipValue) {
-    document.getElementById("error-nivel-escolaridad").style.display = "block";
-    scholarship = false;
-  }
-};
-
-const confirmValidator = (confirmValue) => {
-  if (!confirmValue) {
-    document.getElementById("error-confirmation").style.display = "block";
-    confirmValidated = false;
-  } else {
-    document.getElementById("error-confirmation").style.display = "none";
-    confirmValidated = true;
-  }
-};
-//-----------------------------------HANDLE ERRORS WITH CHANGE OR BLUR-----------------------------------
-const nombreInput = document.getElementsByName("nombre");
-nombreInput[0].addEventListener("change", (e) => nameValidator(e.target.value));
-
-const tipoDoc = document.getElementsByName("tipo-documento");
-tipoDoc[0].addEventListener("change", (e) => docTypeValidator(e.target.value));
-
-const docNumberInput = document.getElementsByName("identificacion");
-docNumberInput[0].addEventListener("change", (e) =>
-  docNumberValidator(e.target.value)
-);
-
-const celularInput = document.getElementsByName("celular");
-celularInput[0].addEventListener("change", (e) =>
-  cellphoneValidator(e.target.value)
-);
-
-const departamento = document.getElementsByName("departamento");
-departamento[0].addEventListener("change", (e) =>
-  departmentValidator(e.target.value)
-);
-
-const ciudad = document.getElementsByName("ciudad");
-ciudad[0].addEventListener("change", (e) => cityValidator(e.target.value));
-
-const sesionUser = document.getElementsByName("sesion");
-sesionUser[0].addEventListener("change", (e) =>
-  sesionValidator(e.target.value)
-);
-
-const atenPreferencial = document.getElementsByName("atencion-preferencial");
-atenPreferencial[0].addEventListener("select", (e) => {
-  console.log(atenPreferencial);
-  preferentialAtentionValidator(e.target.value);
-});
-
-const generoUser = document.getElementsByName("genero");
-generoUser[0].addEventListener("change", (e) =>
-  genderValidator(e.target.value)
-);
-
-const confirmData = document.getElementsByName("confirmation");
-confirmData[0].addEventListener("change", (e) =>
-  confirmValidator(e.target.checked)
-);
-
 const validateForm = (data) => {
   const helps = document.querySelectorAll(".help");
   for (let i = 0; i < helps.length; i++) {
     helps[i].style.display = "none";
   }
-  nameValidator(data.nombre);
-  docTypeValidator(data.tipoDocumento);
-  docNumberValidator(data.identificacion);
-  cellphoneValidator(data.celular);
-  departmentValidator(data.departamento);
-  cityValidator(data.ciudad);
-  sesionValidator(data.sesion);
-  poblationValidator(data.informacionPoblacional);
-  preferentialAtentionValidator(data.atencionPreferencial);
-  genderValidator(data.genero);
-  scholarshipValidator(data.nivelEscolaridad);
-  confirmValidator(form.confirmation.checked);
-  if (
-    !nameValidated ||
-    !docType ||
-    !docNumber ||
-    !cellphone ||
-    !residenceDep ||
-    !residenceCity ||
-    !sesionValidated ||
-    !pobInformation ||
-    !preferencialAtention ||
-    !genderValidated ||
-    !scholarship ||
-    !confirmValidated
-  ) {
-    document.getElementById("buttonMessage").style.display = "block";
+  if (!data.nombre || !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(data.nombre)) {
+    document.getElementById("error-nombre").style.display = "block";
     return false;
-  } else return true;
+  } else if (!data.tipoDocumento) {
+    document.getElementById("error-tipo-documento").style.display = "block";
+    return false;
+  } else if (!data.identificacion || !/^\d{4,15}$/.test(data.identificacion)) {
+    document.getElementById("error-identificacion").style.display = "block";
+    return false;
+  } else if (!data.celular || !/^\d{1,10}$/.test(data.celular)) {
+    document.getElementById("error-celular").style.display = "block";
+    return false;
+  } else if (!data.departamento) {
+    document.getElementById("error-departamento").style.display = "block";
+    return false;
+  } else if (!data.ciudad) {
+    document.getElementById("error-ciudad").style.display = "block";
+    return false;
+  } else if (!data.sesion) {
+    document.getElementById("error-sesion").style.display = "block";
+    return false;
+  } else if (!data.informacionPoblacional) {
+    document.getElementById("error-informacion-poblacional").style.display =
+      "block";
+    return false;
+  } else if (!data.atencionPreferencial) {
+    document.getElementById("error-atencion-preferencial").style.display =
+      "block";
+    return false;
+  } else if (!data.genero) {
+    document.getElementById("error-genero").style.display = "block";
+    return false;
+  } else if (!data.nivelEscolaridad) {
+    document.getElementById("error-nivel-escolaridad").style.display = "block";
+    return false;
+  } else if (!form.confirmation.checked) {
+    document.getElementById("error-confirmation").style.display = "block";
+    return false;
+  }
+  return true;
 };
 
 // Load

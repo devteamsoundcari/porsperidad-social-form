@@ -75,6 +75,14 @@ const loadMultiSelects = () => {
             "Ninguna de las anteriores",
           ]);
       },
+      onChange: function (value, text, element) {
+        poblationValidator(this.element.innerText);
+      },
+      //ESTO ES UNA PRUEBA DE MANEJO AL DESELECCIONAR
+      onUnselect: function (value, text, element) {
+        const texto = this.element.innerText.trim();
+        poblationValidator(texto);
+      },
     }
   );
   multipleAtencionPreferencial = new MultiSelect(
@@ -88,6 +96,9 @@ const loadMultiSelects = () => {
         else if (value === "Ninguna de las anteriores")
           multipleAtencionPreferencial.setValue(["Ninguna de las anteriores"]);
       },
+      onChange: function (value, text, element) {
+        preferentialAtentionValidator(this.element.innerText);
+      },
     }
   );
   multipleNivelEscolaridad = new MultiSelect(
@@ -100,6 +111,9 @@ const loadMultiSelects = () => {
           multipleNivelEscolaridad.setValue(["No aporta"]);
         else if (value === "Ninguna de las anteriores")
           multipleNivelEscolaridad.setValue(["Ninguna de las anteriores"]);
+      },
+      onChange: function (value, text, element) {
+        scholarshipValidator(this.element.innerText);
       },
     }
   );
@@ -143,7 +157,7 @@ let nameValidated,
   confirmValidated;
 
 const nameValidator = (name) => {
-  if (!name || !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name)) {
+  if (!name) {
     document.getElementById("error-nombre").style.display = "block";
     nameValidated = false;
   } else {
@@ -163,7 +177,7 @@ const docTypeValidator = (docTypeV) => {
 };
 
 const docNumberValidator = (docNumberV) => {
-  if (!docNumberV || !/^\d{4,15}$/.test(docNumberV)) {
+  if (!docNumberV) {
     document.getElementById("error-identificacion").style.display = "block";
     docNumber = false;
   } else {
@@ -176,8 +190,7 @@ const cellphoneValidator = (cellphoneV) => {
   if (
     !cellphoneV ||
     !/^\d{1,10}$/.test(cellphoneV) ||
-    cellphoneV.length < 10 ||
-    cellphoneV.length > 10
+    cellphoneV.length === 10
   ) {
     document.getElementById("error-celular").style.display = "block";
     cellphone = false;
@@ -217,8 +230,8 @@ const sesionValidator = (sesionValue) => {
   }
 };
 
-const poblationValidator = (poblationValue) => {
-  if (!poblationValue) {
+function poblationValidator(poblationValue) {
+  if (!poblationValue && poblationValue !== "- Seleccione -") {
     document.getElementById("error-informacion-poblacional").style.display =
       "block";
     pobInformation = false;
@@ -227,7 +240,7 @@ const poblationValidator = (poblationValue) => {
       "none";
     pobInformation = true;
   }
-};
+}
 
 const preferentialAtentionValidator = (preferentialAtentionValue) => {
   if (!preferentialAtentionValue) {
@@ -272,20 +285,27 @@ const confirmValidator = (confirmValue) => {
 };
 //-----------------------------------HANDLE ERRORS WITH CHANGE OR BLUR-----------------------------------
 const nombreInput = document.getElementsByName("nombre");
-nombreInput[0].addEventListener("change", (e) => nameValidator(e.target.value));
+nombreInput[0].addEventListener("input", (e) => {
+  const patron =
+    /[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑçÇàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛäëïöüÄËÏÖÜß\s-']/g;
+  e.target.value = e.target.value.replace(patron, "");
+  nameValidator(e.target.value);
+});
 
 const tipoDoc = document.getElementsByName("tipo-documento");
 tipoDoc[0].addEventListener("change", (e) => docTypeValidator(e.target.value));
 
 const docNumberInput = document.getElementsByName("identificacion");
-docNumberInput[0].addEventListener("change", (e) =>
-  docNumberValidator(e.target.value)
-);
+docNumberInput[0].addEventListener("input", (e) => {
+  const regex = /[^a-zA-Z0-9\s-]/g;
+  e.target.value = e.target.value.replace(regex, "");
+  docNumberValidator(e.target.value);
+});
 
 const celularInput = document.getElementsByName("celular");
-celularInput[0].addEventListener("change", (e) =>
-  cellphoneValidator(e.target.value)
-);
+celularInput[0].addEventListener("input", (e) => {
+  cellphoneValidator(e.target.value);
+});
 
 const departamento = document.getElementsByName("departamento");
 departamento[0].addEventListener("change", (e) =>
@@ -299,12 +319,6 @@ const sesionUser = document.getElementsByName("sesion");
 sesionUser[0].addEventListener("change", (e) =>
   sesionValidator(e.target.value)
 );
-
-const atenPreferencial = document.getElementsByName("atencion-preferencial");
-// atenPreferencial[0].addEventListener("select", (e) => {
-//   console.log(atenPreferencial);
-//   preferentialAtentionValidator(e.target.value);
-// });
 
 const generoUser = document.getElementsByName("genero");
 generoUser[0].addEventListener("change", (e) =>
