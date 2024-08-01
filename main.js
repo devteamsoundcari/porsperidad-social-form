@@ -2,6 +2,7 @@ import {
   validateCalendar,
   getDepartments,
   getCitiesByDepartment,
+  generateVideoCallUrl,
 } from "./privJs/services.js";
 
 // Vars
@@ -190,7 +191,7 @@ const cellphoneValidator = (cellphoneV) => {
   if (
     !cellphoneV ||
     !/^\d{1,10}$/.test(cellphoneV) ||
-    cellphoneV.length === 10
+    cellphoneV.length !== 10
   ) {
     document.getElementById("error-celular").style.display = "block";
     cellphone = false;
@@ -407,10 +408,19 @@ window.addEventListener("load", () => {
     };
 
     const isValid = validateForm(data);
-    console.log(isValid);
-    // if (!isValid) return false;
+    // console.log(isValid);
+    if (!isValid) return false;
 
     console.log("Form data", data);
+
+    const videoCallRes = await generateVideoCallUrl(data);
+
+    if (videoCallRes) {
+      const vCallData = videoCallRes.message;
+      if (vCallData) {
+        window.location.href = vCallData.url;
+      }
+    }
   }
 
   const submitBtn = document.getElementById("submit-btn");

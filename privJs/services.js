@@ -1,3 +1,9 @@
+// ---------------------------------------- IMPORTANTE --------------------------------------------
+/**
+ * La idea de este archivo es separar la lógica, así como evitar exponer datos innecesarios en el front.
+ * Por favor este archivo ponerlo en un lugar que NO sea expuesto al usuario, pero en donde el front pueda acceder a el
+ */
+
 const url = "https://cariai.com/happydps/process";
 
 export const validateCalendar = async () => {
@@ -88,11 +94,19 @@ export const generateVideoCallUrl = async (data) => {
   const headers = new Headers();
   headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
 
-  console.log(data);
-
   const formdata = new FormData();
   formdata.append("operation", "generateURLVCall");
-  formdata.append("numIdentification", data.tipoDocumento);
+  formdata.append("userName", data.nombre);
+  formdata.append("typeIdentification", data.tipoDocumento);
+  formdata.append("numIdentification", data.identificacion);
+  formdata.append("cellphone", data.celular);
+  formdata.append("department", data.departamento);
+  formdata.append("city", data.ciudad);
+  formdata.append("informationPoblation", data.informacionPoblacional);
+  formdata.append("preferentialAtention", data.atencionPreferencial);
+  formdata.append("gender", data.genero);
+  formdata.append("educationLevel", data.nivelEscolaridad);
+  formdata.append("confirmedTyC", data.confirmed);
   formdata.append("dataOrigin", data.sesion);
   // formdata.append("data", JSON.stringify(data));
 
