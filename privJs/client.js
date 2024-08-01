@@ -1,16 +1,19 @@
 class Client {
-  async postData(url = "", data = {}) {
-    const reqOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx",
-      },
-      body: JSON.stringify(data),
-    };
+  async post(url, requestOptions) {
+    console.log(url, requestOptions);
+    try {
+      const response = await fetch(url, requestOptions);
 
-    const response = await fetch(url, reqOptions);
-    return response.json();
+      if (!response.ok) {
+        console.error("HTTP error:", response.status, response.statusText);
+        // Puedes lanzar un error o devolver algo que indique el fallo
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.text();
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 }
 
