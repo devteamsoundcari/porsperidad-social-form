@@ -78,10 +78,12 @@ const loadMultiSelects = () => {
       onChange: function (value, text, element) {
         poblationValidator(this.element.innerText);
       },
-      //ESTO ES UNA PRUEBA DE MANEJO AL DESELECCIONAR
+      //Validador de informacion al deseleccionar
       onUnselect: function (value, text, element) {
         const texto = this.element.innerText.trim();
-        poblationValidator(texto);
+        this.placeholder === texto
+          ? poblationValidator("")
+          : poblationValidator(texto);
       },
     }
   );
@@ -99,6 +101,12 @@ const loadMultiSelects = () => {
       onChange: function (value, text, element) {
         preferentialAtentionValidator(this.element.innerText);
       },
+      onUnselect: function (value, text, element) {
+        const texto = this.element.innerText.trim();
+        this.placeholder === texto
+          ? preferentialAtentionValidator("")
+          : preferentialAtentionValidator(texto);
+      },
     }
   );
   multipleNivelEscolaridad = new MultiSelect(
@@ -114,6 +122,12 @@ const loadMultiSelects = () => {
       },
       onChange: function (value, text, element) {
         scholarshipValidator(this.element.innerText);
+      },
+      onUnselect: function (value, text, element) {
+        const texto = this.element.innerText.trim();
+        this.placeholder === texto
+          ? scholarshipValidator("")
+          : scholarshipValidator(texto);
       },
     }
   );
@@ -190,7 +204,7 @@ const cellphoneValidator = (cellphoneV) => {
   if (
     !cellphoneV ||
     !/^\d{1,10}$/.test(cellphoneV) ||
-    cellphoneV.length === 10
+    cellphoneV.length !== 10
   ) {
     document.getElementById("error-celular").style.display = "block";
     cellphone = false;
