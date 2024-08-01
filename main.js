@@ -263,10 +263,10 @@ sesionUser[0].addEventListener("change", (e) =>
 );
 
 const atenPreferencial = document.getElementsByName("atencion-preferencial");
-atenPreferencial[0].addEventListener("select", (e) => {
-  console.log(atenPreferencial);
-  preferentialAtentionValidator(e.target.value);
-});
+// atenPreferencial[0].addEventListener("select", (e) => {
+//   console.log(atenPreferencial);
+//   preferentialAtentionValidator(e.target.value);
+// });
 
 const generoUser = document.getElementsByName("genero");
 generoUser[0].addEventListener("change", (e) =>
