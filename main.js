@@ -220,6 +220,9 @@ const scholarshipValidator = (scholarshipValue) => {
   if (!scholarshipValue) {
     document.getElementById("error-nivel-escolaridad").style.display = "block";
     scholarship = false;
+  } else {
+    document.getElementById("error-nivel-escolaridad").style.display = "none";
+    scholarship = true;
   }
 };
 
