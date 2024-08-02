@@ -24,7 +24,7 @@ const loadDivipolaSelects = async () => {
     ${departamentos
       .map(
         (depto) =>
-          `<option value="${depto.value}" data-depto-name="${depto.label}">${depto.label}</option>`
+          `<option value="${depto.value}" data-depto-name="${depto.value}, ${depto.label}">${depto.label}</option>`
       )
       .join("")}
     `;
@@ -39,7 +39,6 @@ const loadDivipolaSelects = async () => {
     ciudadSelect.disabled = codDepto === "";
     if (codDepto !== "") {
       const ciudades = await getCitiesByDepartment(codDepto);
-      // console.log(ciudades);
 
       if (ciudades.status === 200) {
         const ciudadesArray = ciudades.message.cities;
@@ -49,7 +48,7 @@ const loadDivipolaSelects = async () => {
         ${ciudadesArray
           .map(
             (ciudad) =>
-              `<option value="${ciudad.value}" data-city-name="${ciudad.label}">${ciudad.label}</option>`
+              `<option value="${ciudad.value}" data-city-name="${ciudad.value}, ${ciudad.label}">${ciudad.label}</option>`
           )
           .join("")}
         `;
@@ -57,6 +56,7 @@ const loadDivipolaSelects = async () => {
     }
   });
 };
+
 async function isInSchedule() {
   const response = await validateCalendar();
   return response;
@@ -139,7 +139,6 @@ window.addEventListener("load", async function () {
   await loadDivipolaSelects();
 
   const res = await isInSchedule();
-  // console.log(res);
 
   if (res) {
     const response = res.message;
@@ -152,7 +151,7 @@ window.addEventListener("load", async function () {
         window.location.href = "./fueraDeHorario.html";
       }, 1500);
     } else {
-      console.log("Está en horario");
+      console.log("T");
     }
   }
 });
@@ -386,7 +385,19 @@ window.addEventListener("load", () => {
   async function submitForm(e) {
     e.preventDefault();
     const form = document.getElementById("form");
-    console.log("checked:", form.confirmation.checked);
+
+    const selectetDepto =
+      form.departamento.options[form.departamento.selectedIndex];
+    let deptoName = "";
+
+    if (selectetDepto.hasAttribute("data-depto-name"))
+      deptoName = selectetDepto.getAttribute("data-depto-name");
+
+    const selectetCity = form.ciudad.options[form.ciudad.selectedIndex];
+    let cityName = "";
+
+    if (selectetCity.hasAttribute("data-city-name"))
+      cityName = selectetCity.getAttribute("data-city-name");
 
     const data = {
       nombre: form.nombre.value ? form.nombre.value : undefined,
@@ -397,10 +408,8 @@ window.addEventListener("load", () => {
         ? form.identificacion.value
         : undefined,
       celular: form.celular.value ? form.celular.value : undefined,
-      departamento: form.departamento.value
-        ? form.departamento.value
-        : undefined,
-      ciudad: form.ciudad.value ? form.ciudad.value : undefined,
+      departamento: deptoName,
+      ciudad: cityName,
       sesion: form.sesion.value ? form.sesion.value : undefined,
       informacionPoblacional: Array.from(
         document.querySelectorAll('[name="informacion-poblacional[]"]')
@@ -418,14 +427,11 @@ window.addEventListener("load", () => {
       )
         .map((element) => element.value)
         .join(", "),
-      confirmation: form.confirmation.checked ? true : false,
+      confirmation: form.confirmation.checked ? "Si" : "No", // En caso de ser "No", no debería dejar llegar a la videollamada.
     };
 
     const isValid = validateForm(data);
-    // console.log(isValid);
     if (!isValid) return false;
-
-    console.log("Form data", data);
 
     const videoCallRes = await generateVideoCallUrl(data);
 
@@ -439,60 +445,4 @@ window.addEventListener("load", () => {
 
   const submitBtn = document.getElementById("submit-btn");
   submitBtn.addEventListener("click", submitForm);
-  // loadDivipolaSelects();
-  // loadMultiSelects();
-  // document.getElementById("submit-btn").addEventListener("click", (e) => {
-  //   e.preventDefault();
-  //   const form = document.getElementById("form");
-  //   const data = {
-  //     nombre: form.nombre.value ? form.nombre.value : undefined,
-  //     tipoDocumento: form["tipo-documento"].value
-  //       ? form["tipo-documento"].value
-  //       : undefined,
-  //     identificacion: form.identificacion.value
-  //       ? form.identificacion.value
-  //       : undefined,
-  //     celular: form.celular.value ? form.celular.value : undefined,
-  //     departamento: form.departamento.value
-  //       ? form.departamento.value
-  //       : undefined,
-  //     ciudad: form.ciudad.value ? form.ciudad.value : undefined,
-  //     sesion: form.sesion.value ? form.sesion.value : undefined,
-  //     informacionPoblacional: Array.from(
-  //       document.querySelectorAll('[name="informacion-poblacional[]"]')
-  //     )
-  //       .map((element) => element.value)
-  //       .join(","),
-  //     atencionPreferencial: Array.from(
-  //       document.querySelectorAll('[name="atencion-preferencial[]"]')
-  //     )
-  //       .map((element) => element.value)
-  //       .join(","),
-  //     genero: form.genero.value ? form.genero.value : undefined,
-  //     nivelEscolaridad: Array.from(
-  //       document.querySelectorAll('[name="nivel-escolaridad[]"]')
-  //     )
-  //       .map((element) => element.value)
-  //       .join(","),
-  //   };
-  //   const isValid = validateForm(data);
-  //   if (!isValid) return false;
-  //   fetch(url, {
-  //     method: "POST",
-  //     mode: "no-cors",
-  //     headers: {
-  //       Accept: "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((res) => {
-  //       if (res && res.url) window.location = res.url;
-  //     })
-  //     .catch(function (error) {
-  //       console.error(error);
-  //     });
-  // });
 });
