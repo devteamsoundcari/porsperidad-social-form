@@ -168,7 +168,8 @@ let nameValidated,
   preferencialAtention,
   genderValidated,
   scholarship,
-  confirmValidated;
+  confirmValidated,
+  captchaValidated;
 
 const nameValidator = (name) => {
   if (!name) {
@@ -297,6 +298,16 @@ const confirmValidator = (confirmValue) => {
     confirmValidated = true;
   }
 };
+
+const captchaValidator = (captchaValue) => {
+  if (captchaValue === "No aceptado") {
+    document.getElementById("error-captcha").style.display = "block";
+    captchaValidated = false;
+  } else {
+    document.getElementById("error-captcha").style.display = "none";
+    captchaValidated = true;
+  }
+};
 //-----------------------------------HANDLE ERRORS WITH CHANGE OR BLUR-----------------------------------
 const nombreInput = document.getElementsByName("nombre");
 nombreInput[0].addEventListener("input", (e) => {
@@ -311,7 +322,7 @@ tipoDoc[0].addEventListener("change", (e) => docTypeValidator(e.target.value));
 
 const docNumberInput = document.getElementsByName("identificacion");
 docNumberInput[0].addEventListener("input", (e) => {
-  const regex = /[^a-zA-Z0-9\s-]/g;
+  const regex = /[^0-9]/g;
   e.target.value = e.target.value.replace(regex, "");
   docNumberValidator(e.target.value);
 });
@@ -361,6 +372,7 @@ const validateForm = (data) => {
   genderValidator(data.genero);
   scholarshipValidator(data.nivelEscolaridad);
   confirmValidator(data.confirmation);
+  captchaValidator(data.captcha);
   if (
     !nameValidated ||
     !docType ||
@@ -373,7 +385,8 @@ const validateForm = (data) => {
     !preferencialAtention ||
     !genderValidated ||
     !scholarship ||
-    !confirmValidated
+    !confirmValidated ||
+    !captchaValidated
   ) {
     document.getElementById("buttonMessage").style.display = "block";
     return false;
@@ -385,6 +398,8 @@ window.addEventListener("load", () => {
   async function submitForm(e) {
     e.preventDefault();
     const form = document.getElementById("form");
+
+    const captchaRes = grecaptcha.getResponse();
 
     const selectetDepto =
       form.departamento.options[form.departamento.selectedIndex];
@@ -428,6 +443,7 @@ window.addEventListener("load", () => {
         .map((element) => element.value)
         .join(", "),
       confirmation: form.confirmation.checked ? "Si" : "No", // En caso de ser "No", no debería dejar llegar a la videollamada.
+      captcha: captchaRes !== "" ? "Aceptado" : "No aceptado",
     };
 
     const isValid = validateForm(data);
