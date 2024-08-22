@@ -59,6 +59,10 @@ header .description > img {
   display: none;
 }
 
+input[name="identificacion"] {
+  height: 45px;
+}
+
 footer {
   /*background-color: #F5F5F5;*/
 }
@@ -78,6 +82,9 @@ footer .footer-text {
 }
 .field-container {
   margin: 15px;
+}
+.field-container.inicio-session {
+  display: none;
 }
 .field {
   flex: 1;

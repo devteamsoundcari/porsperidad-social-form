@@ -161,9 +161,10 @@ let nameValidated,
   docType,
   docNumber,
   cellphone,
+  email,
   residenceDep,
   residenceCity,
-  sesionValidated,
+  // sesionValidated,
   pobInformation,
   preferencialAtention,
   genderValidated,
@@ -212,6 +213,19 @@ const cellphoneValidator = (cellphoneV) => {
   } else {
     document.getElementById("error-celular").style.display = "none";
     cellphone = true;
+  }
+};
+
+const emailValidator = (emailValue) => {
+  if (
+    !emailValue ||
+    !/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/.test(emailValue)
+  ) {
+    document.getElementById("error-email").style.display = "block";
+    email = false;
+  } else {
+    document.getElementById("error-email").style.display = "none";
+    email = true;
   }
 };
 
@@ -332,6 +346,11 @@ celularInput[0].addEventListener("input", (e) => {
   cellphoneValidator(e.target.value);
 });
 
+const emailInput = document.getElementsByName("email");
+emailInput[0].addEventListener("input", (e) => {
+  emailValidator(e.target.value);
+});
+
 const departamento = document.getElementsByName("departamento");
 departamento[0].addEventListener("change", (e) =>
   departmentValidator(e.target.value)
@@ -341,9 +360,9 @@ const ciudad = document.getElementsByName("ciudad");
 ciudad[0].addEventListener("change", (e) => cityValidator(e.target.value));
 
 const sesionUser = document.getElementsByName("sesion");
-sesionUser[0].addEventListener("change", (e) =>
-  sesionValidator(e.target.value)
-);
+// sesionUser[0].addEventListener("change", (e) =>
+//   sesionValidator(e.target.value)
+// );
 
 const generoUser = document.getElementsByName("genero");
 generoUser[0].addEventListener("change", (e) =>
@@ -364,9 +383,10 @@ const validateForm = (data) => {
   docTypeValidator(data.tipoDocumento);
   docNumberValidator(data.identificacion);
   cellphoneValidator(data.celular);
+  emailValidator(data.email);
   departmentValidator(data.departamento);
   cityValidator(data.ciudad);
-  sesionValidator(data.sesion);
+  // sesionValidator(data.sesion);
   poblationValidator(data.informacionPoblacional);
   preferentialAtentionValidator(data.atencionPreferencial);
   genderValidator(data.genero);
@@ -378,9 +398,10 @@ const validateForm = (data) => {
     !docType ||
     !docNumber ||
     !cellphone ||
+    !email ||
     !residenceDep ||
     !residenceCity ||
-    !sesionValidated ||
+    // !sesionValidated ||
     !pobInformation ||
     !preferencialAtention ||
     !genderValidated ||
@@ -425,7 +446,7 @@ window.addEventListener("load", () => {
       celular: form.celular.value ? form.celular.value : undefined,
       departamento: deptoName,
       ciudad: cityName,
-      sesion: form.sesion.value ? form.sesion.value : undefined,
+      // sesion: form.sesion.value ? form.sesion.value : undefined,
       informacionPoblacional: Array.from(
         document.querySelectorAll('[name="informacion-poblacional[]"]')
       )
