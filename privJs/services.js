@@ -12,7 +12,7 @@ export const validateCalendar = async () => {
 
   const formdata = new FormData();
   formdata.append("operation", "validateCalendar");
-  formdata.append("dataOrigin", "Videollamada");
+  formdata.append("dataOrigin", "Click to call");
 
   const requestOptions = {
     method: "POST",
@@ -90,6 +90,37 @@ export const getCitiesByDepartment = async (deptoCode) => {
   }
 };
 
+export const validateUser = async (data) => {
+  const headers = new Headers();
+  headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
+
+  const formdata = new FormData();
+  formdata.append("operation", "consultUser");
+  formdata.append("typeIdentification", data.tipoDocumento);
+  formdata.append("numIdentification", data.identificacion);
+  formdata.append("dataOrigin", "Click to call");
+
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  try {
+    const res = await fetch(url, requestOptions);
+
+    if (!res.ok)
+      throw new Error("Error en el servicio de validación de usuario");
+
+    const data = await res.text();
+    // console.log(data);
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 export const generateVideoCallUrl = async (data) => {
   const headers = new Headers();
   headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
@@ -100,6 +131,7 @@ export const generateVideoCallUrl = async (data) => {
   formdata.append("typeIdentification", data.tipoDocumento);
   formdata.append("numIdentification", data.identificacion);
   formdata.append("cellphone", data.celular);
+  formdata.append("email", data.correo);
   formdata.append("department", data.departamento);
   formdata.append("city", data.ciudad);
   formdata.append("informationPoblation", data.informacionPoblacional);
@@ -121,6 +153,39 @@ export const generateVideoCallUrl = async (data) => {
     const res = await fetch(url, requestOptions);
 
     if (!res.ok) throw new Error("Error en el servicio de generación de url");
+
+    const data = await res.text();
+    // console.log(typeof data, data.length, data);
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+export const updateUser = async (data) => {
+  const headers = new Headers();
+  headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
+
+  const formdata = new FormData();
+  formdata.append("operation", "updateUser");
+  formdata.append("typeIdentification", data.tipoDocumento);
+  formdata.append("numIdentification", data.identificacion);
+  formdata.append("cellphone", data.celular);
+  formdata.append("email", data.correo);
+  formdata.append("dataOrigin", "Click to call");
+
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  try {
+    const res = await fetch(url, requestOptions);
+
+    if (!res.ok)
+      throw new Error("Error en el servicio de actualización de usuario");
 
     const data = await res.text();
     // console.log(data);
