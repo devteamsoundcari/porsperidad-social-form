@@ -416,6 +416,18 @@ const validateForm = (data) => {
 
 // Load
 window.addEventListener("load", () => {
+  window.open(
+    "./popUps/recomendaciones.html",
+    "Recomendaciones",
+    "width=600,height=800"
+  );
+  const screenWidth = window.screen.width;
+  const windowWidth = Math.floor(screenWidth * 0.5);
+  window.open(
+    "./popUps/t&c.html",
+    "Términos y Condiciones",
+    `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
+  );
   async function submitForm(e) {
     e.preventDefault();
     const form = document.getElementById("form");
