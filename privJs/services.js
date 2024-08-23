@@ -162,6 +162,46 @@ export const generateVideoCallUrl = async (data) => {
   }
 };
 
+export const createUser = async (data) => {
+  const headers = new Headers();
+  headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
+
+  const formdata = new FormData();
+  formdata.append("operation", "createUser");
+  formdata.append("userName", data.nombre);
+  formdata.append("typeIdentification", data.tipoDocumento);
+  formdata.append("numIdentification", data.identificacion);
+  formdata.append("cellphone", data.celular);
+  formdata.append("email", data.correo);
+  formdata.append("department", data.departamento);
+  formdata.append("city", data.ciudad);
+  formdata.append("informationPoblation", data.informacionPoblacional);
+  formdata.append("preferentialAtention", data.atencionPreferencial);
+  formdata.append("gender", data.genero);
+  formdata.append("educationLevel", data.nivelEscolaridad);
+  formdata.append("confirmedTyC", data.confirmed);
+  formdata.append("dataOrigin", "Click to call");
+
+  const requestOptions = {
+    method: "POST",
+    headers: headers,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  try {
+    const res = await fetch(url, requestOptions);
+
+    if (!res.ok) throw new Error("Error en el servicio de creación de usuario");
+
+    const data = await res.text();
+    // console.log(typeof data, data.length, data);
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 export const updateUser = async (data) => {
   const headers = new Headers();
   headers.append("Authorization", "Basic VXNlckNhcmlIYXBweURQUzpEOVMqcFB5aDQx");
