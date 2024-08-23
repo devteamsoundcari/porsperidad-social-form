@@ -607,13 +607,13 @@ async function fillData() {
 
 // Load
 window.addEventListener("load", () => {
+  const screenWidth = window.screen.width;
+  const windowWidth = Math.floor(screenWidth * 0.4);
   window.open(
     "./popUps/recomendaciones.html",
     "Recomendaciones",
-    "width=600,height=800"
+    `width=${windowWidth},height=800`
   );
-  const screenWidth = window.screen.width;
-  const windowWidth = Math.floor(screenWidth * 0.5);
   window.open(
     "./popUps/t&c.html",
     "Términos y Condiciones",

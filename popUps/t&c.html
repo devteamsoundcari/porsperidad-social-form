@@ -11,7 +11,7 @@
       <img src="../images/logo.png" alt="logo prosperidad social" />
     </header>
     <h1>Terminos y condiciones de Uso</h1>
-    <div>
+    <div class="info">
       <ol>
         <li>
           - Usted entiende y acepta que las imágenes, contenido, procedimiento e
@@ -35,5 +35,13 @@
         trámite?. Más información Política de Tratamiento de Datos.
       </p>
     </div>
+    <div style="width: 100%; display: flex; justify-content: flex-end">
+      <button style="right: 8px" id="accept">Aceptar</button>
+    </div>
   </body>
+  <script>
+    document
+      .getElementById("accept")
+      .addEventListener("click", () => window.close());
+  </script>
 </html>

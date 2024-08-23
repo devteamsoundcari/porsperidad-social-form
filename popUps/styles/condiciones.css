@@ -6,7 +6,12 @@
 * {
   font-family: "RedHat", sans-serif !important;
 }
-div {
+.info {
   border-top: 1px solid gray;
   border-bottom: 1px solid gray;
+  margin-bottom: 8px;
+}
+
+.info ul {
+  list-style: circle;
 }
