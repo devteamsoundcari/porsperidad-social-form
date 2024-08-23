@@ -614,11 +614,13 @@ window.addEventListener("load", () => {
     "Recomendaciones",
     `width=${windowWidth},height=800`
   );
+
   window.open(
     "./popUps/t&c.html",
     "Términos y Condiciones",
     `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
   );
+
   async function submitForm(e) {
     e.preventDefault();
     const form = document.getElementById("form");
@@ -739,15 +741,17 @@ window.addEventListener("load", () => {
       // console.log(userUpdate);
     } else {
       const createdUser = await createUser(data);
-      console.log("usuario creado", createdUser);
-      const videoCallRes = await generateVideoCallUrl(data);
-      console.log(videoCallRes);
-      // if (videoCallRes) {
-      //   const vCallData = videoCallRes.message;
-      //   if (vCallData) {
-      //     window.location.href = vCallData.url;
-      //   }
-      // }
+      if (createdUser && createdUser.status === 200)
+        alert("Usuario creado con ");
+      // console.log("usuario creado", createdUser);
+    }
+    const videoCallRes = await generateVideoCallUrl(data);
+    // console.log(videoCallRes);
+    if (videoCallRes && videoCallRes.status === 200) {
+      const vCallData = videoCallRes.message;
+      if (vCallData) {
+        window.location.href = vCallData.url;
+      }
     }
   }
 
