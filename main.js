@@ -3,12 +3,15 @@ import {
   getDepartments,
   getCitiesByDepartment,
   generateVideoCallUrl,
+  validateUser,
+  updateUser,
 } from "./privJs/services.js";
 
 // Vars
 let multipleInformacionPoblacional;
 let multipleAtencionPreferencial;
 let multipleNivelEscolaridad;
+let usuarioExiste;
 
 // Functions
 const loadDivipolaSelects = async () => {
@@ -60,6 +63,35 @@ const loadDivipolaSelects = async () => {
 async function isInSchedule() {
   const response = await validateCalendar();
   return response;
+}
+
+function fixData(key, value) {
+  if (value === "") return;
+
+  sessionStorage.setItem(key, value);
+}
+
+function updateSelectOption(selectElement, text, value) {
+  // Ensure the select element exists
+  if (!selectElement) {
+    console.error("El elemento select no existe");
+    return;
+  }
+
+  // Ensure the select element has at least one option
+  if (selectElement.options.length > 0) {
+    selectElement.options[0].textContent = text;
+    selectElement.options[0].value = value;
+  } else {
+    // If no options exist, create one
+    const newOption = document.createElement("option");
+    newOption.textContent = text;
+    newOption.value = value;
+    selectElement.appendChild(newOption);
+  }
+
+  // Set the value to the special value
+  selectElement.value = value;
 }
 
 const loadMultiSelects = () => {
@@ -156,6 +188,16 @@ window.addEventListener("load", async function () {
   }
 });
 
+async function userValidation(formData) {
+  const user = await validateUser(formData);
+
+  if (user.status === 200) {
+    return user.message.response;
+  } else {
+    return user.message.response;
+  }
+}
+
 //variables to handle the call
 let nameValidated,
   docType,
@@ -217,10 +259,10 @@ const cellphoneValidator = (cellphoneV) => {
 };
 
 const emailValidator = (emailValue) => {
-  if (
-    !emailValue ||
-    !/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/.test(emailValue)
-  ) {
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const isValid = emailPattern.test(emailValue);
+  console.log(isValid);
+  if (!emailValue || !emailPattern.test(emailValue)) {
     document.getElementById("error-email").style.display = "block";
     email = false;
   } else {
@@ -260,7 +302,11 @@ const sesionValidator = (sesionValue) => {
 };
 
 function poblationValidator(poblationValue) {
-  if (!poblationValue && poblationValue !== "- Seleccione -") {
+  if (
+    !poblationValue &&
+    poblationValue !== "- Seleccione -" &&
+    poblationValue !== "*****"
+  ) {
     document.getElementById("error-informacion-poblacional").style.display =
       "block";
     pobInformation = false;
@@ -314,7 +360,7 @@ const confirmValidator = (confirmValue) => {
 };
 
 const captchaValidator = (captchaValue) => {
-  if (captchaValue === "No aceptado") {
+  if (captchaValue === "") {
     document.getElementById("error-captcha").style.display = "block";
     captchaValidated = false;
   } else {
@@ -330,9 +376,13 @@ nombreInput[0].addEventListener("input", (e) => {
   e.target.value = e.target.value.replace(patron, "");
   nameValidator(e.target.value);
 });
+nombreInput[0].addEventListener("blur", (e) => {
+  fixData("nombre", e.target.value);
+});
 
 const tipoDoc = document.getElementsByName("tipo-documento");
 tipoDoc[0].addEventListener("change", (e) => docTypeValidator(e.target.value));
+tipoDoc[0].addEventListener("blur", fillData);
 
 const docNumberInput = document.getElementsByName("identificacion");
 docNumberInput[0].addEventListener("input", (e) => {
@@ -340,24 +390,37 @@ docNumberInput[0].addEventListener("input", (e) => {
   e.target.value = e.target.value.replace(regex, "");
   docNumberValidator(e.target.value);
 });
+docNumberInput[0].addEventListener("blur", fillData);
 
 const celularInput = document.getElementsByName("celular");
 celularInput[0].addEventListener("input", (e) => {
   cellphoneValidator(e.target.value);
+});
+celularInput[0].addEventListener("blur", (e) => {
+  fixData("celular", e.target.value);
 });
 
 const emailInput = document.getElementsByName("email");
 emailInput[0].addEventListener("input", (e) => {
   emailValidator(e.target.value);
 });
+emailInput[0].addEventListener("blur", (e) => {
+  fixData("correo", e.target.value);
+});
 
 const departamento = document.getElementsByName("departamento");
 departamento[0].addEventListener("change", (e) =>
   departmentValidator(e.target.value)
 );
+departamento[0].addEventListener("blur", (e) => {
+  fixData("departamento", e.target.value);
+});
 
 const ciudad = document.getElementsByName("ciudad");
 ciudad[0].addEventListener("change", (e) => cityValidator(e.target.value));
+ciudad[0].addEventListener("blur", (e) => {
+  fixData("ciudad", e.target.value);
+});
 
 const sesionUser = document.getElementsByName("sesion");
 // sesionUser[0].addEventListener("change", (e) =>
@@ -368,6 +431,9 @@ const generoUser = document.getElementsByName("genero");
 generoUser[0].addEventListener("change", (e) =>
   genderValidator(e.target.value)
 );
+generoUser[0].addEventListener("blur", (e) => {
+  fixData("genero", e.target.value);
+});
 
 const confirmData = document.getElementsByName("confirmation");
 confirmData[0].addEventListener("change", (e) =>
@@ -379,11 +445,12 @@ const validateForm = (data) => {
   for (let i = 0; i < helps.length; i++) {
     helps[i].style.display = "none";
   }
+
   nameValidator(data.nombre);
   docTypeValidator(data.tipoDocumento);
   docNumberValidator(data.identificacion);
   cellphoneValidator(data.celular);
-  emailValidator(data.email);
+  emailValidator(data.correo);
   departmentValidator(data.departamento);
   cityValidator(data.ciudad);
   // sesionValidator(data.sesion);
@@ -414,6 +481,130 @@ const validateForm = (data) => {
   } else return true;
 };
 
+/** Esta función lo que hace es que llena los datos si el usuario ya existe */
+async function fillData() {
+  const form = document.getElementById("form");
+
+  const data = {
+    tipoDocumento: form["tipo-documento"].value,
+    identificacion: form.identificacion.value,
+  };
+
+  const helps = document.querySelectorAll(".help");
+  for (let i = 0; i < helps.length; i++) {
+    helps[i].style.display = "none";
+  }
+
+  docTypeValidator(data.tipoDocumento);
+  docNumberValidator(data.identificacion);
+
+  if (!docType || !docNumber) {
+    document.getElementById("buttonMessage").style.display = "block";
+    return;
+  } else {
+    document.getElementById("buttonMessage").style.display = "none";
+  }
+
+  const user = await userValidation(data);
+  usuarioExiste = user;
+
+  if (user === "1" || user === 1) {
+    form.nombre.value = "*****";
+    form.nombre.setAttribute("disabled", true);
+
+    // updateSelectOption(form["tipo-documento"], "*****", "hidden");
+    // form["tipo-documento"].setAttribute("disabled", true);
+
+    updateSelectOption(form.departamento, "*****", "hidden");
+    form.departamento.setAttribute("disabled", true);
+
+    updateSelectOption(form.ciudad, "*****", "hidden");
+    form.ciudad.setAttribute("disabled", true);
+
+    const infoPoblacional = document.getElementById(
+      "multiple-informacion-poblacional"
+    );
+    infoPoblacional.classList.add("disabled");
+    const infoPoblacionalText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    infoPoblacionalText[0].innerText = "*****";
+
+    const atencionPreferencial = document.getElementById(
+      "multiple-atencion-preferencial"
+    );
+    atencionPreferencial.classList.add("disabled");
+    const atencionPreferencialText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    atencionPreferencialText[1].innerText = "*****";
+
+    updateSelectOption(form.genero, "*****", "hidden");
+    form.genero.setAttribute("disabled", true);
+
+    const infoEscolaridad = document.getElementById("nivel-escolaridad");
+    infoEscolaridad.classList.add("disabled");
+    const infoEscolaridadText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    infoEscolaridadText[2].innerText = "*****";
+    // updateSelectOption(form["nivel-escolaridad"], "*****", "hidden");
+    // form["nivel-escolaridad"].setAttribute("disabled", true);
+  } else {
+    // Se crea este objeto para que si el usuario inició el llenado del formulario y al final valida si existe no va a perder la data que ya llenó
+    const sessionData = {
+      nombre: sessionStorage.getItem("nombre"),
+      celular: sessionStorage.getItem("celular"),
+      correo: sessionStorage.getItem("correo"),
+      departamento: sessionStorage.getItem("departamento"),
+      ciudad: sessionStorage.getItem("ciudad"),
+      genero: sessionStorage.getItem("genero"),
+    };
+
+    form.nombre.value = sessionData.nombre ? sessionData.nombre : "";
+    form.nombre.removeAttribute("disabled");
+
+    // updateSelectOption(form["tipo-documento"], "- Seleccione -", "");
+    // form["tipo-documento"].removeAttribute("disabled");
+
+    updateSelectOption(form.departamento, "- Seleccione -", "");
+    form.departamento.removeAttribute("disabled");
+
+    updateSelectOption(form.ciudad, "- Seleccione -", "");
+    form.ciudad.removeAttribute("disabled");
+
+    const infoPoblacional = document.getElementById(
+      "multiple-informacion-poblacional"
+    );
+    infoPoblacional.classList.remove("disabled");
+    const infoPoblacionalText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    infoPoblacionalText[0].innerText = "- Seleccione -";
+
+    const atencionPreferencial = document.getElementById(
+      "multiple-atencion-preferencial"
+    );
+    atencionPreferencial.classList.remove("disabled");
+    const atencionPreferencialText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    atencionPreferencialText[1].innerText = "- Seleccione -";
+
+    updateSelectOption(form.genero, "- Seleccione -", "");
+    form.genero.removeAttribute("disabled");
+
+    const infoEscolaridad = document.getElementById("nivel-escolaridad");
+    infoEscolaridad.classList.remove("disabled");
+    const infoEscolaridadText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    infoEscolaridadText[2].innerText = "- Seleccione -";
+    // updateSelectOption(form["nivel-escolaridad"], "- Seleccione -", "");
+    // form["nivel-escolaridad"].removeAttribute("disabled");
+  }
+}
+
 // Load
 window.addEventListener("load", () => {
   window.open(
@@ -438,14 +629,77 @@ window.addEventListener("load", () => {
       form.departamento.options[form.departamento.selectedIndex];
     let deptoName = "";
 
-    if (selectetDepto.hasAttribute("data-depto-name"))
+    if (selectetDepto.hasAttribute("data-depto-name")) {
       deptoName = selectetDepto.getAttribute("data-depto-name");
+    } else {
+      deptoName = form.departamento.value;
+    }
 
     const selectetCity = form.ciudad.options[form.ciudad.selectedIndex];
     let cityName = "";
 
-    if (selectetCity.hasAttribute("data-city-name"))
+    if (selectetCity.hasAttribute("data-city-name")) {
       cityName = selectetCity.getAttribute("data-city-name");
+    } else {
+      cityName = form.ciudad.value;
+    }
+
+    // Se valida que el array poblacional tenga al menos un elemento y si el texto es ***** el valor de poblacional será hidden. De lo contrario tomará el valor del array
+    let poblacional = "";
+    const arrayPoblacional = Array.from(
+      document.querySelectorAll('[name="informacion-poblacional[]"]')
+    )
+      .map((element) => element.value)
+      .join(", ");
+    const infoPoblacionalText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    if (
+      arrayPoblacional.length === 0 &&
+      infoPoblacionalText[0].innerText === "*****"
+    ) {
+      poblacional = "hidden";
+    } else {
+      poblacional = arrayPoblacional;
+    }
+
+    // Se valida que el array atencionPreferencial tenga al menos un elemento y si el texto es ***** el valor de atencionPreferencial será hidden. De lo contrario tomará el valor del array
+    let atencionPreferencial = "";
+    const arrayAtencionPreferencial = Array.from(
+      document.querySelectorAll('[name="atencion-preferencial[]"]')
+    )
+      .map((element) => element.value)
+      .join(", ");
+    const infoPreferencialText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    if (
+      arrayAtencionPreferencial.length === 0 &&
+      infoPreferencialText[1].innerText === "*****"
+    ) {
+      atencionPreferencial = "hidden";
+    } else {
+      atencionPreferencial = arrayAtencionPreferencial;
+    }
+
+    //Se valida que el array nivelEscolaridad tenga al menos un elemento y si el texto es ***** el valor de nivelEscolaridad será hidden. De lo contrario tomará el valor del array
+    let nivelEscolaridad = "";
+    const arrayNivelEscolaridad = Array.from(
+      document.querySelectorAll('[name="nivel-escolaridad[]"]')
+    )
+      .map((element) => element.value)
+      .join(", ");
+    const infoEscolaridadText = document.getElementsByClassName(
+      "multi-select-header-placeholder"
+    );
+    if (
+      arrayNivelEscolaridad.length === 0 &&
+      infoEscolaridadText[2].innerText === "*****"
+    ) {
+      nivelEscolaridad = "hidden";
+    } else {
+      nivelEscolaridad = arrayNivelEscolaridad;
+    }
 
     const data = {
       nombre: form.nombre.value ? form.nombre.value : undefined,
@@ -456,39 +710,42 @@ window.addEventListener("load", () => {
         ? form.identificacion.value
         : undefined,
       celular: form.celular.value ? form.celular.value : undefined,
+      correo: form.email.value ? form.email.value : undefined,
       departamento: deptoName,
       ciudad: cityName,
-      // sesion: form.sesion.value ? form.sesion.value : undefined,
-      informacionPoblacional: Array.from(
-        document.querySelectorAll('[name="informacion-poblacional[]"]')
-      )
-        .map((element) => element.value)
-        .join(", "),
-      atencionPreferencial: Array.from(
-        document.querySelectorAll('[name="atencion-preferencial[]"]')
-      )
-        .map((element) => element.value)
-        .join(", "),
+      sesion: "Videollamada", //form.sesion.value ? form.sesion.value : undefined,
+      informacionPoblacional: poblacional,
+      atencionPreferencial: atencionPreferencial,
       genero: form.genero.value ? form.genero.value : undefined,
-      nivelEscolaridad: Array.from(
-        document.querySelectorAll('[name="nivel-escolaridad[]"]')
-      )
-        .map((element) => element.value)
-        .join(", "),
+      nivelEscolaridad: nivelEscolaridad,
       confirmation: form.confirmation.checked ? "Si" : "No", // En caso de ser "No", no debería dejar llegar a la videollamada.
       captcha: captchaRes !== "" ? "Aceptado" : "No aceptado",
     };
 
+    // console.log(data);
+
     const isValid = validateForm(data);
     if (!isValid) return false;
 
-    const videoCallRes = await generateVideoCallUrl(data);
+    if (usuarioExiste === 1) {
+      const updateData = {
+        tipoDocumento: form["tipo-documento"].value,
+        identificacion: form.identificacion.value,
+        celular: form.celular.value,
+        correo: form.email.value,
+      };
 
-    if (videoCallRes) {
-      const vCallData = videoCallRes.message;
-      if (vCallData) {
-        window.location.href = vCallData.url;
-      }
+      const userUpdate = await updateUser(updateData);
+      console.log(userUpdate);
+    } else {
+      const videoCallRes = await generateVideoCallUrl(data);
+      console.log(videoCallRes);
+      // if (videoCallRes) {
+      //   const vCallData = videoCallRes.message;
+      //   if (vCallData) {
+      //     window.location.href = vCallData.url;
+      //   }
+      // }
     }
   }
 
