@@ -6,7 +6,8 @@
 * {
   font-family: "RedHat", sans-serif !important;
 }
-div {
+.info {
   border-top: 1px solid grey;
   border-bottom: 1px solid grey;
+  margin-bottom: 8px;
 }

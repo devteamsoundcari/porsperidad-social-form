@@ -11,7 +11,7 @@
       <img src="../images/logo.png" alt="logo prosperidad social" />
     </header>
     <h1>Recomendaciones</h1>
-    <div>
+    <div class="info">
       <p>
         Con el fin de garantizar el acceso a la información, Prosperidad Social
         ha destinado este canal de VideoCall y es necesario que tenga en cuenta
@@ -30,9 +30,28 @@
         <li>
           Se debe tener la última version de uno de los siguientes navegadores
           <ul>
-            <li>chrome</li>
-            <li>firefox</li>
-            <li>Microsoft edge</li>
+            <li style="padding-left: 10px">
+              <img
+                src="../images/google.png"
+                style="width: 27px; height: 22px"
+                class="icon"
+              />Chrome
+            </li>
+            <li style="padding-left: 10px">
+              <img
+                src="../images/firefox.png"
+                style="width: 35px; height: 22px"
+                class="icon"
+              />Firefox
+            </li>
+            <li style="padding-left: 10px">
+              <img
+                src="../images/edge.png"
+                style="width: 25px; height: 22px"
+                class="icon"
+              />Microsoft Edge
+            </li>
+            <br />
           </ul>
         </li>
         <li>
@@ -44,5 +63,13 @@
         </li>
       </ol>
     </div>
+    <div style="width: 100%; display: flex; justify-content: flex-end">
+      <button style="right: 8px" id="accept">Aceptar</button>
+    </div>
   </body>
+  <script>
+    document
+      .getElementById("accept")
+      .addEventListener("click", () => window.close());
+  </script>
 </html>
