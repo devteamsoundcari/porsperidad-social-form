@@ -5,6 +5,7 @@ import {
   generateVideoCallUrl,
   validateUser,
   updateUser,
+  createUser,
 } from "./privJs/services.js";
 
 // Vars
@@ -261,7 +262,6 @@ const cellphoneValidator = (cellphoneV) => {
 const emailValidator = (emailValue) => {
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const isValid = emailPattern.test(emailValue);
-  console.log(isValid);
   if (!emailValue || !emailPattern.test(emailValue)) {
     document.getElementById("error-email").style.display = "block";
     email = false;
@@ -360,7 +360,7 @@ const confirmValidator = (confirmValue) => {
 };
 
 const captchaValidator = (captchaValue) => {
-  if (captchaValue === "") {
+  if (captchaValue === "" || captchaValue === "No aceptado") {
     document.getElementById("error-captcha").style.display = "block";
     captchaValidated = false;
   } else {
@@ -736,8 +736,10 @@ window.addEventListener("load", () => {
       };
 
       const userUpdate = await updateUser(updateData);
-      console.log(userUpdate);
+      // console.log(userUpdate);
     } else {
+      const createdUser = await createUser(data);
+      console.log("usuario creado", createdUser);
       const videoCallRes = await generateVideoCallUrl(data);
       console.log(videoCallRes);
       // if (videoCallRes) {
