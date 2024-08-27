@@ -120,6 +120,19 @@ label[for="confirmation"] {
   background-color: #f5f5f5;
 }
 
+.schedule-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+.schedule-message > p {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 @media only screen and (min-width: 768px) {
   header > .title {
     max-width: 480px;

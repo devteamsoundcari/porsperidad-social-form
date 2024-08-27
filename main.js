@@ -199,6 +199,22 @@ async function userValidation(formData) {
   }
 }
 
+function openPopups() {
+  const screenWidth = window.screen.width;
+  const windowWidth = Math.floor(screenWidth * 0.4);
+  window.open(
+    "./popUps/recomendaciones.html",
+    "Recomendaciones",
+    `width=${windowWidth},height=800`
+  );
+
+  window.open(
+    "./popUps/t&c.html",
+    "Términos y Condiciones",
+    `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
+  );
+}
+
 //variables to handle the call
 let nameValidated,
   docType,
@@ -272,7 +288,12 @@ const emailValidator = (emailValue) => {
 };
 
 const departmentValidator = (department) => {
-  if (!department || department === undefined) {
+  if (
+    !department ||
+    department === undefined ||
+    department === "none" ||
+    department === "- Seleccione -"
+  ) {
     document.getElementById("error-departamento").style.display = "block";
     residenceDep = false;
   } else {
@@ -282,7 +303,7 @@ const departmentValidator = (department) => {
 };
 
 const cityValidator = (city) => {
-  if (!city) {
+  if (!city || city === "none") {
     document.getElementById("error-ciudad").style.display = "block";
     residenceCity = false;
   } else {
@@ -302,11 +323,7 @@ const sesionValidator = (sesionValue) => {
 };
 
 function poblationValidator(poblationValue) {
-  if (
-    !poblationValue &&
-    poblationValue !== "- Seleccione -" &&
-    poblationValue !== "*****"
-  ) {
+  if (!poblationValue && poblationValue !== "*****") {
     document.getElementById("error-informacion-poblacional").style.display =
       "block";
     pobInformation = false;
@@ -350,7 +367,7 @@ const scholarshipValidator = (scholarshipValue) => {
 };
 
 const confirmValidator = (confirmValue) => {
-  if (!confirmValue) {
+  if (!confirmValue || confirmValue === "No") {
     document.getElementById("error-confirmation").style.display = "block";
     confirmValidated = false;
   } else {
@@ -567,7 +584,10 @@ async function fillData() {
     // updateSelectOption(form["tipo-documento"], "- Seleccione -", "");
     // form["tipo-documento"].removeAttribute("disabled");
 
-    updateSelectOption(form.departamento, "- Seleccione -", "");
+    const deptoVal = sessionData.departamento
+      ? sessionData.departamento
+      : "- Seleccione -";
+    updateSelectOption(form.departamento, deptoVal, "");
     form.departamento.removeAttribute("disabled");
 
     updateSelectOption(form.ciudad, "- Seleccione -", "");
@@ -607,20 +627,6 @@ async function fillData() {
 
 // Load
 window.addEventListener("load", () => {
-  const screenWidth = window.screen.width;
-  const windowWidth = Math.floor(screenWidth * 0.4);
-  window.open(
-    "./popUps/recomendaciones.html",
-    "Recomendaciones",
-    `width=${windowWidth},height=800`
-  );
-
-  window.open(
-    "./popUps/t&c.html",
-    "Términos y Condiciones",
-    `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
-  );
-
   async function submitForm(e) {
     e.preventDefault();
     const form = document.getElementById("form");
@@ -656,13 +662,38 @@ window.addEventListener("load", () => {
     const infoPoblacionalText = document.getElementsByClassName(
       "multi-select-header-placeholder"
     );
+
     if (
       arrayPoblacional.length === 0 &&
       infoPoblacionalText[0].innerText === "*****"
     ) {
       poblacional = "hidden";
     } else {
-      poblacional = arrayPoblacional;
+      if (
+        arrayPoblacional.split(",").length >= 2 &&
+        arrayPoblacional.includes("No aporta")
+      ) {
+        poblacional = "No aporta";
+        const eBlock = document.getElementById("error-informacion-poblacional");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción junto a No aporta";
+        eBlock.style.display = "block";
+        return;
+      } else if (
+        arrayPoblacional.split(", ").length >= 2 &&
+        arrayPoblacional.includes("Ninguna de las anteriores")
+      ) {
+        poblacional = "Ninguna de las anteriores";
+        const eBlock = document.getElementById("error-informacion-poblacional");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción junto a Ninguna de las anteriores";
+        eBlock.style.display = "block";
+        return;
+      } else {
+        const eBlock = document.getElementById("error-informacion-poblacional");
+        eBlock.style.display = "none";
+        poblacional = arrayPoblacional;
+      }
     }
 
     // Se valida que el array atencionPreferencial tenga al menos un elemento y si el texto es ***** el valor de atencionPreferencial será hidden. De lo contrario tomará el valor del array
@@ -681,7 +712,31 @@ window.addEventListener("load", () => {
     ) {
       atencionPreferencial = "hidden";
     } else {
-      atencionPreferencial = arrayAtencionPreferencial;
+      if (
+        arrayAtencionPreferencial.split(",").length >= 2 &&
+        arrayAtencionPreferencial.includes("Ninguna de las anteriores")
+      ) {
+        atencionPreferencial = "Ninguna de las anteriores";
+        const eBlock = document.getElementById("error-atencion-preferencial");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción junto a Ninguna de las anteriores";
+        eBlock.style.display = "block";
+        return;
+      } else if (
+        arrayAtencionPreferencial.split(",").length >= 2 &&
+        arrayAtencionPreferencial.includes("No aporta")
+      ) {
+        atencionPreferencial = "No aporta";
+        const eBlock = document.getElementById("error-atencion-preferencial");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción junto a No aporta";
+        eBlock.style.display = "block";
+        return;
+      } else {
+        const eBlock = document.getElementById("error-atencion-preferencial");
+        eBlock.style.display = "none";
+        atencionPreferencial = arrayAtencionPreferencial;
+      }
     }
 
     //Se valida que el array nivelEscolaridad tenga al menos un elemento y si el texto es ***** el valor de nivelEscolaridad será hidden. De lo contrario tomará el valor del array
@@ -694,13 +749,39 @@ window.addEventListener("load", () => {
     const infoEscolaridadText = document.getElementsByClassName(
       "multi-select-header-placeholder"
     );
+
     if (
       arrayNivelEscolaridad.length === 0 &&
       infoEscolaridadText[2].innerText === "*****"
     ) {
       nivelEscolaridad = "hidden";
     } else {
-      nivelEscolaridad = arrayNivelEscolaridad;
+      if (
+        arrayNivelEscolaridad.split(",").length >= 2 &&
+        arrayNivelEscolaridad.includes("Ninguna de las anteriores")
+      ) {
+        console.log(arrayNivelEscolaridad);
+        nivelEscolaridad = "Ninguna de las anteriores";
+        const eBlock = document.getElementById("error-nivel-escolaridad");
+        eBlock.innerText =
+          "No puedes seleccionar otra opción junto a Ninguna de las anteriores";
+        eBlock.style.display = "block";
+        return;
+      } else if (
+        arrayNivelEscolaridad.split(",").length >= 2 &&
+        arrayNivelEscolaridad.includes("No aporta")
+      ) {
+        nivelEscolaridad = "No aporta";
+        const eBlock = document.getElementById("error-nivel-escolaridad");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción además de No aporta";
+        eBlock.style.display = "block";
+        return;
+      } else {
+        const eBlock = document.getElementById("error-nivel-escolaridad");
+        eBlock.style.display = "none";
+        nivelEscolaridad = arrayNivelEscolaridad;
+      }
     }
 
     const data = {
@@ -715,7 +796,7 @@ window.addEventListener("load", () => {
       correo: form.email.value ? form.email.value : undefined,
       departamento: deptoName,
       ciudad: cityName,
-      sesion: "Videollamada", //form.sesion.value ? form.sesion.value : undefined,
+      sesion: "Click to call", //form.sesion.value ? form.sesion.value : undefined,
       informacionPoblacional: poblacional,
       atencionPreferencial: atencionPreferencial,
       genero: form.genero.value ? form.genero.value : undefined,
@@ -738,11 +819,12 @@ window.addEventListener("load", () => {
       };
 
       const userUpdate = await updateUser(updateData);
+      openPopups();
       // console.log(userUpdate);
     } else {
       const createdUser = await createUser(data);
-      if (createdUser && createdUser.status === 200)
-        alert("Usuario creado con ");
+      if (createdUser && createdUser.status === 200) openPopups();
+      // alert("Usuario creado con éxito");
       // console.log("usuario creado", createdUser);
     }
     const videoCallRes = await generateVideoCallUrl(data);
@@ -750,7 +832,9 @@ window.addEventListener("load", () => {
     if (videoCallRes && videoCallRes.status === 200) {
       const vCallData = videoCallRes.message;
       if (vCallData) {
-        window.location.href = vCallData.url;
+        setTimeout(() => {
+          window.location.href = vCallData.url;
+        }, 2000);
       }
     }
   }

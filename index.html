@@ -10,11 +10,6 @@
     <link rel="stylesheet" href="lib/bulma.min.css" />
     <link rel="stylesheet" href="lib/MultiSelect.css" />
     <link rel="stylesheet" href="styles.css" />
-    <link
-      rel="stylesheet"
-      crossorigin="anonymous"
-      href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9hdzAxLnVzLWVhc3QtMS4wMjAuaXZycG93ZXJzLm5ldC9mb3Jtcy9tYXMtZ29iY29sLw"
-    />
     <script src="lib/MultiSelect.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- <script src="divipola.js"></script> -->
@@ -113,6 +108,7 @@
           <div class="control is-expandend">
             <div class="select is-fullwidth">
               <select name="departamento" id="departamento">
+                <option value="" data-depto-name="none"></option>
                 <!-- <option selected value="">- Seleccione -</option> -->
               </select>
             </div>
@@ -125,7 +121,9 @@
           <label class="label">Ciudad de Residencia: *</label>
           <div class="control is-expandend">
             <div class="select is-fullwidth">
-              <select name="ciudad" id="ciudad" disabled></select>
+              <select name="ciudad" id="ciudad" disabled>
+                <option value="" data-city-name="none"></option>
+              </select>
             </div>
           </div>
           <p id="error-ciudad" class="help is-danger">Seleccione una Ciudad</p>
@@ -319,6 +317,12 @@
           </p>
           <button id="submit-btn" class="button is-link">Continuar</button>
         </div>
+      </div>
+      <div class="schedule-message">
+        <p>
+          Nuestro horario de atención es de lunes a viernes de 8:00 A.M a 6:00
+          P.M y sábados de 8:00 A.M a 1:00 P.M
+        </p>
       </div>
     </footer>
   </body>
