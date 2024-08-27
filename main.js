@@ -199,20 +199,23 @@ async function userValidation(formData) {
   }
 }
 
-function openPopups() {
+function openPopups(flag) {
   const screenWidth = window.screen.width;
   const windowWidth = Math.floor(screenWidth * 0.4);
-  window.open(
-    "./popUps/recomendaciones.html",
-    "Recomendaciones",
-    `width=${windowWidth},height=800`
-  );
 
-  window.open(
-    "./popUps/t&c.html",
-    "Términos y Condiciones",
-    `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
-  );
+  if (flag === "recomendaciones")
+    window.open(
+      "./popUps/recomendaciones.html",
+      "Recomendaciones",
+      `width=${windowWidth},height=800`
+    );
+
+  if (flag === "t&c")
+    window.open(
+      "./popUps/t&c.html",
+      "Términos y Condiciones",
+      `width=${windowWidth},height=800,left=${screenWidth - windowWidth}`
+    );
 }
 
 //variables to handle the call
@@ -291,8 +294,8 @@ const departmentValidator = (department) => {
   if (
     !department ||
     department === undefined ||
-    department === "none" ||
-    department === "- Seleccione -"
+    department === "- Seleccione -" ||
+    department === ""
   ) {
     document.getElementById("error-departamento").style.display = "block";
     residenceDep = false;
@@ -303,7 +306,7 @@ const departmentValidator = (department) => {
 };
 
 const cityValidator = (city) => {
-  if (!city || city === "none") {
+  if (!city || city === "") {
     document.getElementById("error-ciudad").style.display = "block";
     residenceCity = false;
   } else {
@@ -426,17 +429,23 @@ emailInput[0].addEventListener("blur", (e) => {
 });
 
 const departamento = document.getElementsByName("departamento");
-departamento[0].addEventListener("change", (e) =>
-  departmentValidator(e.target.value)
-);
+departamento[0].addEventListener("change", (e) => {
+  departmentValidator(e.target.value);
+});
 departamento[0].addEventListener("blur", (e) => {
-  fixData("departamento", e.target.value);
+  const selectedDepto = e.target.options[e.target.selectedIndex];
+  const value = selectedDepto.dataset["deptoName"].split(",")[1].trim();
+  // console.log(value);
+  fixData("departamento", value);
 });
 
 const ciudad = document.getElementsByName("ciudad");
 ciudad[0].addEventListener("change", (e) => cityValidator(e.target.value));
 ciudad[0].addEventListener("blur", (e) => {
-  fixData("ciudad", e.target.value);
+  const selectedCity = e.target.options[e.target.selectedIndex];
+  const value = selectedCity.dataset.cityName.split(",")[1].trim();
+  // console.log(value);
+  fixData("ciudad", value);
 });
 
 const sesionUser = document.getElementsByName("sesion");
@@ -526,6 +535,13 @@ async function fillData() {
   usuarioExiste = user;
 
   if (user === "1" || user === 1) {
+    sessionStorage.removeItem("nombre");
+    sessionStorage.removeItem("celular");
+    sessionStorage.removeItem("correo");
+    sessionStorage.removeItem("departamento");
+    sessionStorage.removeItem("ciudad");
+    sessionStorage.removeItem("genero");
+
     form.nombre.value = "*****";
     form.nombre.setAttribute("disabled", true);
 
@@ -590,7 +606,8 @@ async function fillData() {
     updateSelectOption(form.departamento, deptoVal, "");
     form.departamento.removeAttribute("disabled");
 
-    updateSelectOption(form.ciudad, "- Seleccione -", "");
+    const cityVal = sessionData.ciudad ? sessionData.ciudad : "- Seleccione -";
+    updateSelectOption(form.ciudad, cityVal, "");
     form.ciudad.removeAttribute("disabled");
 
     const infoPoblacional = document.getElementById(
@@ -805,7 +822,7 @@ window.addEventListener("load", () => {
       captcha: captchaRes !== "" ? "Aceptado" : "No aceptado",
     };
 
-    // console.log(data);
+    console.log(data);
 
     const isValid = validateForm(data);
     if (!isValid) return false;
@@ -819,12 +836,27 @@ window.addEventListener("load", () => {
       };
 
       const userUpdate = await updateUser(updateData);
-      openPopups();
+      sessionStorage.removeItem("nombre");
+      sessionStorage.removeItem("celular");
+      sessionStorage.removeItem("correo");
+      sessionStorage.removeItem("departamento");
+      sessionStorage.removeItem("ciudad");
+      sessionStorage.removeItem("genero");
+      openPopups("recomendaciones");
+      openPopups("t&c");
       // console.log(userUpdate);
     } else {
       const createdUser = await createUser(data);
-      if (createdUser && createdUser.status === 200) openPopups();
-      // alert("Usuario creado con éxito");
+      sessionStorage.removeItem("nombre");
+      sessionStorage.removeItem("celular");
+      sessionStorage.removeItem("correo");
+      sessionStorage.removeItem("departamento");
+      sessionStorage.removeItem("ciudad");
+      sessionStorage.removeItem("genero");
+      if (createdUser && createdUser.status === 200) {
+        openPopups("recomendaciones");
+        openPopups("t&c");
+      }
       // console.log("usuario creado", createdUser);
     }
     const videoCallRes = await generateVideoCallUrl(data);

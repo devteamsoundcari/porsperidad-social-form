@@ -138,7 +138,7 @@ export const generateVideoCallUrl = async (data) => {
   formdata.append("preferentialAtention", data.atencionPreferencial);
   formdata.append("gender", data.genero);
   formdata.append("educationLevel", data.nivelEscolaridad);
-  formdata.append("confirmedTyC", data.confirmed);
+  formdata.append("confirmedTyC", data.confirmation);
   formdata.append("dataOrigin", data.sesion);
   // formdata.append("data", JSON.stringify(data));
 
@@ -179,7 +179,7 @@ export const createUser = async (data) => {
   formdata.append("preferentialAtention", data.atencionPreferencial);
   formdata.append("gender", data.genero);
   formdata.append("educationLevel", data.nivelEscolaridad);
-  formdata.append("confirmedTyC", data.confirmed);
+  formdata.append("confirmedTyC", data.confirmation);
   formdata.append("dataOrigin", "Click to call");
 
   const requestOptions = {
