@@ -108,6 +108,8 @@ const loadMultiSelects = () => {
           multipleInformacionPoblacional.setValue([
             "Ninguna de las anteriores",
           ]);
+        else if (value === "Otro grupo")
+          multipleInformacionPoblacional.setValue(["Otro grupo"]);
       },
       onChange: function (value, text, element) {
         poblationValidator(this.element.innerText);
@@ -143,7 +145,8 @@ const loadMultiSelects = () => {
       },
     }
   );
-  multipleNivelEscolaridad = new MultiSelect(
+
+  /*multipleNivelEscolaridad = new MultiSelect(
     document.getElementById("nivel-escolaridad"),
     {
       selectAll: false,
@@ -164,7 +167,7 @@ const loadMultiSelects = () => {
           : scholarshipValidator(texto);
       },
     }
-  );
+  );*/
 };
 
 window.addEventListener("load", async function () {
@@ -255,7 +258,7 @@ const docTypeValidator = (docTypeV) => {
 };
 
 const docNumberValidator = (docNumberV) => {
-  if (!docNumberV) {
+  if (!docNumberV || docNumberV.length < 4 || docNumberV.length > 15) {
     document.getElementById("error-identificacion").style.display = "block";
     docNumber = false;
   } else {
@@ -291,12 +294,7 @@ const emailValidator = (emailValue) => {
 };
 
 const departmentValidator = (department) => {
-  if (
-    !department ||
-    department === undefined ||
-    department === "- Seleccione -" ||
-    department === ""
-  ) {
+  if (!department) {
     document.getElementById("error-departamento").style.display = "block";
     residenceDep = false;
   } else {
@@ -461,11 +459,20 @@ generoUser[0].addEventListener("blur", (e) => {
   fixData("genero", e.target.value);
 });
 
+const scholarshipUser = document.getElementsByName("nivel-escolaridad");
+scholarshipUser[0].addEventListener("change", (e) =>
+  scholarshipValidator(e.target.value)
+);
+scholarshipUser[0].addEventListener("blur", (e) => {
+  fixData("nivelEscolaridad", e.target.value);
+});
+
 const confirmData = document.getElementsByName("confirmation");
 confirmData[0].addEventListener("change", (e) =>
   confirmValidator(e.target.checked)
 );
 
+// Función de Validación de formulario
 const validateForm = (data) => {
   const helps = document.querySelectorAll(".help");
   for (let i = 0; i < helps.length; i++) {
@@ -541,6 +548,7 @@ async function fillData() {
     sessionStorage.removeItem("departamento");
     sessionStorage.removeItem("ciudad");
     sessionStorage.removeItem("genero");
+    sessionStorage.removeItem("nivelEscolaridad");
 
     form.nombre.value = "*****";
     form.nombre.setAttribute("disabled", true);
@@ -575,14 +583,14 @@ async function fillData() {
     updateSelectOption(form.genero, "*****", "hidden");
     form.genero.setAttribute("disabled", true);
 
-    const infoEscolaridad = document.getElementById("nivel-escolaridad");
-    infoEscolaridad.classList.add("disabled");
-    const infoEscolaridadText = document.getElementsByClassName(
-      "multi-select-header-placeholder"
-    );
-    infoEscolaridadText[2].innerText = "*****";
-    // updateSelectOption(form["nivel-escolaridad"], "*****", "hidden");
-    // form["nivel-escolaridad"].setAttribute("disabled", true);
+    // const infoEscolaridad = document.getElementById("nivel-escolaridad");
+    // infoEscolaridad.classList.add("disabled");
+    // const infoEscolaridadText = document.getElementsByClassName(
+    //   "multi-select-header-placeholder"
+    // );
+    // infoEscolaridadText[2].innerText = "*****";
+    updateSelectOption(form["nivel-escolaridad"], "*****", "hidden");
+    form["nivel-escolaridad"].setAttribute("disabled", true);
   } else {
     // Se crea este objeto para que si el usuario inició el llenado del formulario y al final valida si existe no va a perder la data que ya llenó
     const sessionData = {
@@ -592,6 +600,7 @@ async function fillData() {
       departamento: sessionStorage.getItem("departamento"),
       ciudad: sessionStorage.getItem("ciudad"),
       genero: sessionStorage.getItem("genero"),
+      nivelEscolaridad: sessionStorage.getItem("nivelEscolaridad"),
     };
 
     form.nombre.value = sessionData.nombre ? sessionData.nombre : "";
@@ -628,17 +637,21 @@ async function fillData() {
     );
     atencionPreferencialText[1].innerText = "- Seleccione -";
 
+    form.genero.value = sessionData.genero ? sessionData.genero : "";
     updateSelectOption(form.genero, "- Seleccione -", "");
     form.genero.removeAttribute("disabled");
 
-    const infoEscolaridad = document.getElementById("nivel-escolaridad");
-    infoEscolaridad.classList.remove("disabled");
-    const infoEscolaridadText = document.getElementsByClassName(
-      "multi-select-header-placeholder"
-    );
-    infoEscolaridadText[2].innerText = "- Seleccione -";
-    // updateSelectOption(form["nivel-escolaridad"], "- Seleccione -", "");
-    // form["nivel-escolaridad"].removeAttribute("disabled");
+    // const infoEscolaridad = document.getElementById("nivel-escolaridad");
+    // infoEscolaridad.classList.remove("disabled");
+    // const infoEscolaridadText = document.getElementsByClassName(
+    //   "multi-select-header-placeholder"
+    // );
+    // infoEscolaridadText[2].innerText = "- Seleccione -";
+    form["nivel-escolaridad"].value = sessionData.nivelEscolaridad
+      ? sessionData.nivelEscolaridad
+      : "";
+    updateSelectOption(form["nivel-escolaridad"], "- Seleccione -", "");
+    form["nivel-escolaridad"].removeAttribute("disabled");
   }
 }
 
@@ -767,39 +780,39 @@ window.addEventListener("load", () => {
       "multi-select-header-placeholder"
     );
 
-    if (
-      arrayNivelEscolaridad.length === 0 &&
-      infoEscolaridadText[2].innerText === "*****"
-    ) {
-      nivelEscolaridad = "hidden";
-    } else {
-      if (
-        arrayNivelEscolaridad.split(",").length >= 2 &&
-        arrayNivelEscolaridad.includes("Ninguna de las anteriores")
-      ) {
-        console.log(arrayNivelEscolaridad);
-        nivelEscolaridad = "Ninguna de las anteriores";
-        const eBlock = document.getElementById("error-nivel-escolaridad");
-        eBlock.innerText =
-          "No puedes seleccionar otra opción junto a Ninguna de las anteriores";
-        eBlock.style.display = "block";
-        return;
-      } else if (
-        arrayNivelEscolaridad.split(",").length >= 2 &&
-        arrayNivelEscolaridad.includes("No aporta")
-      ) {
-        nivelEscolaridad = "No aporta";
-        const eBlock = document.getElementById("error-nivel-escolaridad");
-        eBlock.innerText =
-          " No puedes seleccionar otra opción además de No aporta";
-        eBlock.style.display = "block";
-        return;
-      } else {
-        const eBlock = document.getElementById("error-nivel-escolaridad");
-        eBlock.style.display = "none";
-        nivelEscolaridad = arrayNivelEscolaridad;
-      }
-    }
+    // if (
+    //   arrayNivelEscolaridad.length === 0 &&
+    //   infoEscolaridadText[2].innerText === "*****"
+    // ) {
+    //   nivelEscolaridad = "hidden";
+    // } else {
+    //   if (
+    //     arrayNivelEscolaridad.split(",").length >= 2 &&
+    //     arrayNivelEscolaridad.includes("Ninguna de las anteriores")
+    //   ) {
+    //     console.log(arrayNivelEscolaridad);
+    //     nivelEscolaridad = "Ninguna de las anteriores";
+    //     const eBlock = document.getElementById("error-nivel-escolaridad");
+    //     eBlock.innerText =
+    //       "No puedes seleccionar otra opción junto a Ninguna de las anteriores";
+    //     eBlock.style.display = "block";
+    //     return;
+    //   } else if (
+    //     arrayNivelEscolaridad.split(",").length >= 2 &&
+    //     arrayNivelEscolaridad.includes("No aporta")
+    //   ) {
+    //     nivelEscolaridad = "No aporta";
+    //     const eBlock = document.getElementById("error-nivel-escolaridad");
+    //     eBlock.innerText =
+    //       " No puedes seleccionar otra opción además de No aporta";
+    //     eBlock.style.display = "block";
+    //     return;
+    //   } else {
+    //     const eBlock = document.getElementById("error-nivel-escolaridad");
+    //     eBlock.style.display = "none";
+    //     nivelEscolaridad = arrayNivelEscolaridad;
+    //   }
+    // }
 
     const data = {
       nombre: form.nombre.value ? form.nombre.value : undefined,
@@ -811,8 +824,9 @@ window.addEventListener("load", () => {
         : undefined,
       celular: form.celular.value ? form.celular.value : undefined,
       correo: form.email.value ? form.email.value : undefined,
-      departamento: deptoName,
-      ciudad: cityName,
+      departamento:
+        deptoName === "none" || deptoName === "Error" ? "" : deptoName,
+      ciudad: cityName === "none" ? "" : cityName,
       sesion: "Click to call", //form.sesion.value ? form.sesion.value : undefined,
       informacionPoblacional: poblacional,
       atencionPreferencial: atencionPreferencial,
