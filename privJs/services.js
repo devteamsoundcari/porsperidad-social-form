@@ -4,7 +4,7 @@
  * Por favor este archivo ponerlo en un lugar que NO sea expuesto al usuario, pero en donde el front pueda acceder a el
  */
 
-const url = "https://cariai.com/happydps/process";
+const url = "https://cari.ai/happydps/process";
 
 export const validateCalendar = async () => {
   const headers = new Headers();

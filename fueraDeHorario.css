@@ -16,6 +16,7 @@ header {
 
 header > .logo {
   display: flex;
+  max-width: 100%;
 }
 
 header > .title {
@@ -58,4 +59,11 @@ header > .separator {
 .boldSection {
   color: #858585;
   font-weight: 900;
+}
+
+@media (max-width: 450px) {
+  .sectionContainer {
+    width: 100%;
+    padding: 0 8px;
+  }
 }

@@ -57,6 +57,10 @@ const loadDivipolaSelects = async () => {
           .join("")}
         `;
       }
+    } else if (codDepto === "hidden") {
+      ciudadSelect.innerHTML = `
+      <option value="hidden" data-city-name="hidden">- Seleccione -</option>
+      `;
     }
   });
 };
@@ -719,6 +723,15 @@ window.addEventListener("load", () => {
           " No puedes seleccionar otra opción junto a Ninguna de las anteriores";
         eBlock.style.display = "block";
         return;
+      } else if (
+        arrayPoblacional.split(", ").length >= 2 &&
+        arrayPoblacional.includes("Otro grupo")
+      ) {
+        const eBlock = document.getElementById("error-informacion-poblacional");
+        eBlock.innerText =
+          " No puedes seleccionar otra opción junto a Otro grupo";
+        eBlock.style.display = "block";
+        return;
       } else {
         const eBlock = document.getElementById("error-informacion-poblacional");
         eBlock.style.display = "none";
@@ -770,15 +783,15 @@ window.addEventListener("load", () => {
     }
 
     //Se valida que el array nivelEscolaridad tenga al menos un elemento y si el texto es ***** el valor de nivelEscolaridad será hidden. De lo contrario tomará el valor del array
-    let nivelEscolaridad = "";
-    const arrayNivelEscolaridad = Array.from(
-      document.querySelectorAll('[name="nivel-escolaridad[]"]')
-    )
-      .map((element) => element.value)
-      .join(", ");
-    const infoEscolaridadText = document.getElementsByClassName(
-      "multi-select-header-placeholder"
-    );
+    // let nivelEscolaridad = "";
+    // const arrayNivelEscolaridad = Array.from(
+    //   document.querySelectorAll('[name="nivel-escolaridad[]"]')
+    // )
+    //   .map((element) => element.value)
+    //   .join(", ");
+    // const infoEscolaridadText = document.getElementsByClassName(
+    //   "multi-select-header-placeholder"
+    // );
 
     // if (
     //   arrayNivelEscolaridad.length === 0 &&
@@ -824,14 +837,15 @@ window.addEventListener("load", () => {
         : undefined,
       celular: form.celular.value ? form.celular.value : undefined,
       correo: form.email.value ? form.email.value : undefined,
-      departamento:
-        deptoName === "none" || deptoName === "Error" ? "" : deptoName,
+      departamento: deptoName === "none" ? "" : deptoName,
       ciudad: cityName === "none" ? "" : cityName,
       sesion: "Click to call", //form.sesion.value ? form.sesion.value : undefined,
       informacionPoblacional: poblacional,
       atencionPreferencial: atencionPreferencial,
       genero: form.genero.value ? form.genero.value : undefined,
-      nivelEscolaridad: nivelEscolaridad,
+      nivelEscolaridad: form["nivel-escolaridad"].value
+        ? form["nivel-escolaridad"].value
+        : undefined,
       confirmation: form.confirmation.checked ? "Si" : "No", // En caso de ser "No", no debería dejar llegar a la videollamada.
       captcha: captchaRes !== "" ? "Aceptado" : "No aceptado",
     };
@@ -880,7 +894,7 @@ window.addEventListener("load", () => {
       if (vCallData) {
         setTimeout(() => {
           window.location.href = vCallData.url;
-        }, 2000);
+        }, 5000);
       }
     }
   }
