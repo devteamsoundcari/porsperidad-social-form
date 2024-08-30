@@ -262,7 +262,7 @@ const docTypeValidator = (docTypeV) => {
 };
 
 const docNumberValidator = (docNumberV) => {
-  if (!docNumberV || docNumberV.length < 4 || docNumberV.length > 15) {
+  if (!docNumberV || docNumberV.length < 4 || docNumberV.length > 10) {
     document.getElementById("error-identificacion").style.display = "block";
     docNumber = false;
   } else {
