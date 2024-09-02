@@ -850,7 +850,7 @@ window.addEventListener("load", () => {
       captcha: captchaRes !== "" ? "Aceptado" : "No aceptado",
     };
 
-    console.log(data);
+    // console.log(data);
 
     const isValid = validateForm(data);
     if (!isValid) return false;
@@ -864,6 +864,11 @@ window.addEventListener("load", () => {
       };
 
       const userUpdate = await updateUser(updateData);
+      if (userUpdate.status === 200) {
+        const submitBtn = document.getElementById("submit-btn")
+        submitBtn.setAttribute("disabled", true)
+      }
+
       sessionStorage.removeItem("nombre");
       sessionStorage.removeItem("celular");
       sessionStorage.removeItem("correo");
@@ -882,6 +887,8 @@ window.addEventListener("load", () => {
       sessionStorage.removeItem("ciudad");
       sessionStorage.removeItem("genero");
       if (createdUser && createdUser.status === 200) {
+        const submitBtn = document.getElementById("submit-btn")
+        submitBtn.setAttribute("disabled", true)
         openPopups("recomendaciones");
         openPopups("t&c");
       }
@@ -894,7 +901,7 @@ window.addEventListener("load", () => {
       if (vCallData) {
         setTimeout(() => {
           window.location.href = vCallData.url;
-        }, 5000);
+        }, 500);
       }
     }
   }
