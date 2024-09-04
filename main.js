@@ -71,7 +71,7 @@ async function isInSchedule() {
 }
 
 function fixData(key, value) {
-  if (value === "") return;
+  if (value === "" || value === "*****") return;
 
   sessionStorage.setItem(key, value);
 }
@@ -864,10 +864,10 @@ window.addEventListener("load", () => {
       };
 
       const userUpdate = await updateUser(updateData);
-      if (userUpdate.status === 200) {
+      /*if (userUpdate.status === 200) {
         const submitBtn = document.getElementById("submit-btn")
         submitBtn.setAttribute("disabled", true)
-      }
+      }*/
 
       sessionStorage.removeItem("nombre");
       sessionStorage.removeItem("celular");
@@ -887,8 +887,8 @@ window.addEventListener("load", () => {
       sessionStorage.removeItem("ciudad");
       sessionStorage.removeItem("genero");
       if (createdUser && createdUser.status === 200) {
-        const submitBtn = document.getElementById("submit-btn")
-        submitBtn.setAttribute("disabled", true)
+        /*const submitBtn = document.getElementById("submit-btn")
+        submitBtn.setAttribute("disabled", true)*/
         openPopups("recomendaciones");
         openPopups("t&c");
       }
